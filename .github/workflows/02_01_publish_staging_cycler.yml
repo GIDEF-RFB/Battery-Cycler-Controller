@@ -38,7 +38,7 @@ jobs:
       source-path: "code/cycler/src/${{ vars.CYCLER_PACKAGE_NAME }}/${{ needs.detect-folder.outputs.folder }}/${{ github.event.pull_request.head.ref }}"
       is-production: false
 
-  deploy-staging:
-    name: Deploy cycler controller modifications to STAGING
-    needs: build-publish-package-on-pr
-    uses: ./.github/workflows/02_03_deploy_staging.yml
+  # deploy-staging:
+  #   name: Deploy cycler controller modifications to STAGING
+  #   needs: build-publish-package-on-pr
+  #   uses: ./.github/workflows/02_03_deploy_staging.yml

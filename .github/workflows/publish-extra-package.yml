@@ -6,9 +6,9 @@ on:
   workflow_call:
     inputs:
       is-production:
-        description: 'If true publish package to PyPi else to TestPyPi'
+        description: 'If flase publish package to PyPi else to TestPyPi'
         type: boolean
-        default: false
+        default: true
 
 jobs:
 
