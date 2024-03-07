@@ -1,1 +1,1 @@
-code/LICENSE.txt
+../../LICENSE.txt
