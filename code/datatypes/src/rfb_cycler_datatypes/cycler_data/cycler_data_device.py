@@ -12,7 +12,7 @@ from typing import Dict, List
 from enum import Enum
 
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
-from system_logger_tool import sys_log_logger_get_module_logger
+from rfb_logger_tool import sys_log_logger_get_module_logger
 log = sys_log_logger_get_module_logger(__name__)
 
 #######################          PROJECT IMPORTS         #######################
