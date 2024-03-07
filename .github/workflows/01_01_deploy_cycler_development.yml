@@ -30,7 +30,7 @@ jobs:
   build-package:
     name: QA and Build battery controller on ${{ github.ref_name }} push
     needs: detect-folder
-    uses: WattRex/System-Tools/.github/workflows/build_python_package.yml@develop
+    uses: GIDEF-RFB/System-Tools/.github/workflows/build_python_package.yml@develop
     with:
       package-name: "${{ vars.CYCLER_PACKAGE_NAME }}"
       package-path: "code/cycler"
