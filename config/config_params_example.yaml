@@ -1,11 +1,11 @@
 ---
 
-system_shared_tool:
+rfb_shared_tool:
   DEFAULT_CHAN_NUM_MSG: 300
   DEFAULT_IPC_MSG_SIZE: 400
   DEFAULT_CHAN_TIMEOUT: 3
 
-wattrex_cycler_cu_manager:
+rfb_cycler_cu_manager:
   DEFAULT_TX_CAN_NAME         : 'TX_CAN'            # Default tx_can system queue name
   DEFAULT_TX_SCPI_NAME        : 'tx_scpi'           # Default tx_scpi system queue name
   DEFAULT_RX_CAN_NAME         : 'RX_CAN_QUEUE'      # Default rx_can system queue name
@@ -16,10 +16,10 @@ wattrex_cycler_cu_manager:
   # Default path to credential file for rabbitmq
   DEFAULT_CRED_PATH      : './config/.cred.yaml'
 
-wattrex_driver_db:
+rfb_driver_db:
   DEFAULT_CRED_FILEPATH: '~/roberto/cycler_controler/config/.cred.yaml'
 
-wattrex_driver_epc:
+rfb_driver_epc:
   DEFAULT_MAX_HS_VOLT             : 14100         # Max high side voltage the epc has as hardware limits
   DEFAULT_MIN_HS_VOLT             : 5300          # Min high side voltage the epc has as hardware limits
   DEFAULT_MAX_LS_VOLT             : 9000 #5100          # Max low side voltage the epc has as hardware limits
@@ -36,7 +36,7 @@ wattrex_driver_epc:
   DEFAULT_RX_CHAN                 : 'RX_CAN_EPC'  # Name of the RX channel for epc
   DEFAULT_MAX_READS               : 3000          # Max number of reads to get data
 
-wattrex_driver_bms:
+rfb_driver_bms:
   DEFAULT_MAX_MSG             : 100 # Max number of allowed message per chan
   DEFAULT_MAX_MESSAGE_SIZE    : 120 # Size of message sent through IPC message queue
   DEFAULT_TX_CHAN             : 'TX_CAN' # Name of the TX channel in CAN
@@ -46,7 +46,32 @@ wattrex_driver_bms:
                                   'vstack', 'temp1', 'temp2', 'temp3', 'temp4', 'pres1', 'pres2'] #Allowed measure names
   DEFAULT_TIMEOUT_RESPONSE    : 30 # Expected time to get answer from BMS
 
-scpi_sniffer:
+rfb_driver_rs:
+  DEFAULT_MAX_MSG             : 100 # Max number of allowed message per chan
+  DEFAULT_MAX_MESSAGE_SIZE    : 400 # Size of message sent through IPC message queue
+  DEFAULT_TX_CHAN             : 'TX_SCPI' #'TX_SCPI' # Name of the TX channel in SCPI
+  DEFAULT_RX_CHAN             : 'RX_SCPI_RS'  #Name of the RX channel for RS loads
+  DEFAULT_MAX_READS           : 10
+
+rfb_driver_ea:
+  DEFAULT_MAX_MSG             : 100 # Max number of allowed message per chan
+  DEFAULT_MAX_MESSAGE_SIZE    : 400 # Size of message sent through IPC message queue
+  DEFAULT_TX_CHAN             : 'TX_SCPI' #'TX_SCPI' # Name of the TX channel in SCPI
+  DEFAULT_RX_CHAN             : 'RX_SCPI_EA'  #Name of the RX channel for RS loads
+  DEFAULT_MAX_READS           : 10
+
+rfb_driver_bk:
+  DEFAULT_MAX_MSG               : 100 # Max number of allowed message per chan
+  DEFAULT_MAX_MESSAGE_SIZE      : 400 # Size of message sent through IPC message queue
+  DEFAULT_TX_CHAN               : 'TX_SCPI' #'TX_SCPI' # Name of the TX channel in CAN
+  DEFAULT_RX_CHAN               : 'RX_SCPI_BK'  #Name of the RX channel for epc
+  DEFAULT_MAX_VOLT              : 1000 #V # Max voltage allowed
+  DEFAULT_MAX_CURR              : 20 #A # Max current allowed
+  DEFAULT_MAX_WAIT_TIME         : 3
+  DEFAULT_TIME_BETWEEN_ATTEMPTS : 0.1
+  DEFAULT_MAX_READS             : 10
+
+rfb_scpi_sniffer:
   DEFAULT_TIMEOUT_SEND_MSG    : 0.1
   DEFAULT_TIMEOUT_RX_MSG      : 0.02
   DEFAULT_NODE_PERIOD         : 40
@@ -58,7 +83,7 @@ scpi_sniffer:
   DEFAULT_RX_CHAN             : 'RX_SCPI_'  #Name of the RX channel for epc
   DEFAULT_NUM_ATTEMPTS        : 10 # Max number of reads to get data
 
-can_sniffer:
+rfb_can_sniffer:
   DEFAULT_CHAN_NUM_MSG        : 200
   DEFAULT_MAX_MSG_SIZE        : 300
   DEFAULT_TIMEOUT_SEND_MSG    : 0.1
@@ -89,7 +114,7 @@ mid_dabs:
   DEFAULT_PERIOD_ELECT_MEAS   : 25 # Express in centiseconds
   DEFAULT_PERIOD_TEMP_MEAS    : 25 # Express in centiseconds
 
-wattrex_cycler_db_sync:
+rfb_cycler_db_sync:
   DEFAULT_CRED_FILEPATH       : './config/.cred.yaml' # Path to the location of the credential file
   DEFAULT_SYNC_NODE_NAME      : 'SYNC'
   DEFAULT_COMP_UNIT           : 2
