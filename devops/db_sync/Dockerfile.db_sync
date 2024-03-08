@@ -22,5 +22,5 @@ CMD ["python", "./devops/db_sync/run_db_sync.py"]
 
 FROM db_sync_base as db_sync_prod
 ARG UPDATE_REQS=default
-RUN pip install wattrex-cycler-db-sync
+RUN pip install rfb-cycler-db-sync
 CMD ["python", "./devops/db_sync/run_db_sync.py"]

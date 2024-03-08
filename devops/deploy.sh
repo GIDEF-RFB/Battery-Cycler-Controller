@@ -19,9 +19,9 @@ export GROUP_ID=$(id -g)
 
 initial_deploy () {
     force_stop
-    python3 -m pip install --upgrade can-sniffer
-    python3 -m pip install --upgrade SCPI-sniffer
-    python3 -m pip install --upgrade wattrex-cycler-cu-manager
+    python3 -m pip install --upgrade rfb-can-sniffer
+    python3 -m pip install --upgrade rfb-SCPI-sniffer
+    python3 -m pip install --upgrade rfb-cycler-cu-manager
     mkdir -p "${REPO_ROOT_DIR}/log"
 
     docker compose ${DOCKER_COMPOSE_ARGS} up cache_db db_sync -d

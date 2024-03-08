@@ -25,7 +25,7 @@ RUN pip install -r ./code/cycler/requirements.txt
 FROM cycler_base as cycler_prod
 ARG UPDATE_REQS=default
 WORKDIR ${APP_PATH}
-RUN pip install wattrex-battery-cycler
+RUN pip install rfb-battery-cycler
 
 
 CMD ["python", "./devops/cycler/run_cycler.py"]

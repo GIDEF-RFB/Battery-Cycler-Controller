@@ -14,7 +14,7 @@ abspath = os.path.abspath(__file__)
 dname = os.path.dirname(abspath)
 os.chdir(dname + "/../../")
 
-from system_logger_tool import sys_log_logger_get_module_logger, SysLogLoggerC, Logger
+from rfb_logger_tool import sys_log_logger_get_module_logger, SysLogLoggerC, Logger
 #######################       LOGGER CONFIGURATION       #######################
 
 if __name__ == '__main__':
@@ -23,7 +23,7 @@ if __name__ == '__main__':
 log: Logger = sys_log_logger_get_module_logger(__name__)
 
 #######################          MODULE IMPORTS          #######################
-from scpi_sniffer import DrvScpiNodeC
+from rfb_scpi_sniffer import DrvScpiNodeC
 
 #######################            FUNCTIONS             #######################
 if __name__ == '__main__':
