@@ -1,0 +1,21 @@
+# This workflow deploy system tools to production environment
+
+name: Manual Docker deployment DB_SYNC (PRODUCTION)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  publish-docker-image-db-sync:
+    name: Publish db-sync docker image
+    uses: GIDEF-RFB/Battery-Experiments-Manager/.github/workflows/docker_image.yml@develop
+    secrets:
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
+    with:
+      dockerfile-path: ./devops/db_sync/Dockerfile.db_sync
+      docker-repo-name: rfb-cycler-db-sync
+      is-develop: false
+      docker-user: ${{ vars.DOCKER_USER }}
+      docker-user-arg: 69976 # wattrex
+      docker-group-arg: 69976 # wattrex
+      docker-target: db_sync_prod
