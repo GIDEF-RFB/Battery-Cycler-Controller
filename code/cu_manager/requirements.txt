@@ -1,5 +1,6 @@
 rfb-logger-tool
 rfb-shared-tool
+rfb-config-tool
 rfb-driver-mqtt
 rfb-cycler-datatypes
 rfb-scpi-sniffer
