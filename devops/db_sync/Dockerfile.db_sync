@@ -11,6 +11,7 @@ WORKDIR ${APP_PATH}
 ENV PATH="${PATH}:/home/${UG_NAME}/.local/bin"
 RUN pip install --upgrade pip
 ADD --chown=${UG_NAME}:${UG_NAME} ./config/config_params_example.yaml ./config/config_params.yaml
+ADD --chown=${UG_NAME}:${UG_NAME} ./config/db_sync/log_config_example.yaml ./config/db_sync/log_config.yaml
 ENV CONFIG_FILE_PATH=${APP_PATH}/config/config_params.yaml
 ADD --chown=${UG_NAME}:${UG_NAME} ./devops/db_sync ./devops/db_sync
 
@@ -18,7 +19,7 @@ FROM db_sync_base as db_sync_local
 ARG UPDATE_REQS=default
 ADD --chown=${UG_NAME}:${UG_NAME} ./code/db_sync ./code/db_sync
 RUN pip install -r ./code/db_sync/requirements.txt
-CMD ["python", "./devops/db_sync/run_db_sync.py"]
+CMD ["python", "./devops/db_sync/run_db_sync_local.py"]
 
 FROM db_sync_base as db_sync_prod
 ARG UPDATE_REQS=default

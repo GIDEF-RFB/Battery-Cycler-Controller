@@ -21,7 +21,8 @@ log: Logger = sys_log_logger_get_module_logger(__name__)
 
 #######################          MODULE IMPORTS          #######################
 sys.path.append(os.path.dirname(__file__)+'/../../code')
-from rfb_cycler_db_sync import DbSyncNodeC
+from db_sync.src.rfb_cycler_db_sync import DbSyncNodeC
+# from rfb_cycler_db_sync import DbSyncNodeC
 
 #######################          PROJECT IMPORTS         #######################
 
