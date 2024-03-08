@@ -7,7 +7,7 @@ on:
 
 jobs:
   publish-docker-image-db-sync:
-    if: ${{ github.ref_name }}=='db_sync'
+    # if: ${{ github.ref_name }}=='db_sync'
     name: Publish db-sync docker image
     uses: GIDEF-RFB/Battery-Experiments-Manager/.github/workflows/docker_image.yml@develop
     secrets:
