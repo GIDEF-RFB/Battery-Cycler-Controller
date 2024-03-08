@@ -34,7 +34,7 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
     with:
       dockerfile-path: ./devops/cycler/Dockerfile.cycler
-      docker-repo-name: wattrex-cycler-node
+      docker-repo-name: rfb-cycler-node
       is-develop: false
       docker-user: ${{ vars.DOCKER_USER }}
       docker-user-arg: 69976 # wattrex
@@ -49,7 +49,7 @@ jobs:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
     with:
       dockerfile-path: ./devops/db_sync/Dockerfile.db_sync
-      docker-repo-name: wattrex-cycler-db-sync
+      docker-repo-name: rfb-cycler-db-sync
       is-develop: false
       docker-user: ${{ vars.DOCKER_USER }}
       docker-user-arg: 69976 # wattrex
