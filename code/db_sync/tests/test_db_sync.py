@@ -16,7 +16,7 @@ from sqlalchemy import select, text, delete
 
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
 sys.path.append(os.getcwd())
-from system_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
+from rfb_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
 main_logger = SysLogLoggerC(file_log_levels="config/db_sync/log_config.yaml",
                             output_sub_folder='tests')
 log: Logger = sys_log_logger_get_module_logger(name="test_db_sync")
@@ -24,13 +24,13 @@ log: Logger = sys_log_logger_get_module_logger(name="test_db_sync")
 #######################       THIRD PARTY IMPORTS        #######################
 
 #######################          PROJECT IMPORTS         #######################
-from wattrex_driver_db import (DrvDbSqlEngineC, DrvDbTypeE, DrvDbMasterExperimentC,
+from rfb_driver_db import (DrvDbSqlEngineC, DrvDbTypeE, DrvDbMasterExperimentC,
                                DrvDbCacheExperimentC, DrvDbCacheExtendedMeasureC,
                                DrvDbCacheGenericMeasureC, DrvDbCacheStatusC)
 
 #######################          MODULE IMPORTS          #######################
 sys.path.append(os.getcwd()+'/code/db_sync/')
-from src.wattrex_cycler_db_sync import DbSyncNodeC
+from src.rfb_cycler_db_sync import DbSyncNodeC
 
 
 #######################              ENUMS               #######################

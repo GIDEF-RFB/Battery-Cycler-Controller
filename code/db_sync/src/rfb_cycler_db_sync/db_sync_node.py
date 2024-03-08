@@ -14,10 +14,10 @@ from threading import Event
 
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
 path.append(os.getcwd())
-from system_logger_tool import Logger, sys_log_logger_get_module_logger # pylint: disable=wrong-import-position
+from rfb_logger_tool import Logger, sys_log_logger_get_module_logger # pylint: disable=wrong-import-position
 log:Logger = sys_log_logger_get_module_logger(__name__)
 
-from system_shared_tool import SysShdNodeC # pylint: disable=wrong-import-position
+from rfb_shared_tool import SysShdNodeC # pylint: disable=wrong-import-position
 
 #######################          PROJECT IMPORTS         #######################
 
