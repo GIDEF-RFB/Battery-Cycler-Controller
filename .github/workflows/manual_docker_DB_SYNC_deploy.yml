@@ -1,6 +1,6 @@
 # This workflow deploy system tools to production environment
 
-name: Manual Docker deployment (PRODUCTION)
+name: Manual Docker deployment DB_SYNC (PRODUCTION)
 
 on:
   workflow_dispatch:
