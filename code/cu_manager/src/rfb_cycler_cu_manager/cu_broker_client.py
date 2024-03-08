@@ -11,16 +11,16 @@ from pickle import dumps, loads
 #######################       THIRD PARTY IMPORTS        #######################
 
 #######################    SYSTEM ABSTRACTION IMPORTS    #######################
-from system_logger_tool import sys_log_logger_get_module_logger, Logger
+from rfb_logger_tool import sys_log_logger_get_module_logger, Logger
 
 #######################       LOGGER CONFIGURATION       #######################
 log: Logger = sys_log_logger_get_module_logger(__name__)
 
 #######################          PROJECT IMPORTS         #######################
-from wattrex_cycler_datatypes.comm_data  import CommDataCuC,\
+from rfb_cycler_datatypes.comm_data  import CommDataCuC,\
     CommDataDeviceC,CommDataHeartbeatC, CommDataRegisterTypeE
 
-from wattrex_driver_mqtt import DrvMqttDriverC
+from rfb_driver_mqtt import DrvMqttDriverC
 
 #######################          MODULE IMPORTS          #######################
 

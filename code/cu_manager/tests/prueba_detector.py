@@ -13,14 +13,14 @@ import os
 # from time import sleep
 # from threading import Event
 
-from system_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
+from rfb_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
 if __name__ == '__main__':
     cycler_logger = SysLogLoggerC(file_log_levels='./devops/log_config.yaml',
                                   output_sub_folder='detector')
 log: Logger = sys_log_logger_get_module_logger(__name__)
 
 sys.path.append(os.getcwd()+'/code/cu_manager/')
-from src.wattrex_cycler_cu_manager.detect import DetectorC
+from src.rfb_cycler_cu_manager.detect import DetectorC
 # from can_sniffer import DrvCanNodeC
 
 # can_working_flag = Event()

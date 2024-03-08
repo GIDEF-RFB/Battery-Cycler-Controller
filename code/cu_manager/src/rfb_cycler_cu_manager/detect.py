@@ -13,7 +13,7 @@ from time import time
 from serial import PARITY_ODD
 
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
-from system_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
+from rfb_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
 if __name__ == '__main__':
     cycler_logger = SysLogLoggerC(file_log_levels='./devops/cu_manager/log_config.yaml',
                                   output_sub_folder='detector')
@@ -22,12 +22,12 @@ from bitarray.util import ba2int, int2ba
 from bitarray import bitarray
 
 #######################       THIRD PARTY IMPORTS        #######################
-from can_sniffer import DrvCanCmdDataC, DrvCanFilterC, DrvCanCmdTypeE, DrvCanMessageC
-from scpi_sniffer import DrvScpiCmdDataC, DrvScpiCmdTypeE, DrvScpiSerialConfC
-from system_shared_tool import SysShdIpcChanC
+from rfb_can_sniffer import DrvCanCmdDataC, DrvCanFilterC, DrvCanCmdTypeE, DrvCanMessageC
+from rfb_scpi_sniffer import DrvScpiCmdDataC, DrvScpiCmdTypeE, DrvScpiSerialConfC
+from rfb_shared_tool import SysShdIpcChanC
 
 #######################          PROJECT IMPORTS         #######################
-from wattrex_cycler_datatypes.comm_data import CommDataDeviceC #pylint: disable= wrong-import-order
+from rfb_cycler_datatypes.comm_data import CommDataDeviceC #pylint: disable= wrong-import-order
 
 #######################          MODULE IMPORTS          #######################
 
