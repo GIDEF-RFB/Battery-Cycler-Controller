@@ -128,18 +128,29 @@ required_file_list=("${DEVOPS_DIR}/docker-compose.yml"
                     "${DEVOPS_DIR}/cache_db/createCacheCyclerTables.sql"
                     "${CONFIG_DIR}/.cred.env"
                     "${CONFIG_DIR}/.cred.yaml"
-                    "${CONFIG_DIR}/config_params.yaml"
-                    "${CONFIG_DIR}/scpi/log_config.yaml"
-                    "${CONFIG_DIR}/cycler/log_config.yaml"
-                    "${CONFIG_DIR}/cu_manager/log_config.yaml"
-                    "${CONFIG_DIR}/can/log_config.yaml"
-                    "${CONFIG_DIR}/db_sync/log_config.yaml" )
+                    )
+optional_file_list=("${CONFIG_DIR}/config_params"
+                    "${CONFIG_DIR}/scpi/log_config"
+                    "${CONFIG_DIR}/cycler/log_config"
+                    "${CONFIG_DIR}/cu_manager/log_config"
+                    "${CONFIG_DIR}/can/log_config"
+                    "${CONFIG_DIR}/db_sync/log_config"
+                    )
 
-for file_path in ${required_file_list}
+for file_path in ${required_file_list[@]}
 do
     if [ ! -f ${file_path} ]; then
         echo "${file_path} not found"
         exit 1
+    fi
+done
+
+for file_path in ${optional_file_list[@]}
+do
+    echo "Checking ${file_path} file..."
+    if test ! -f ${file_path}.yaml ; then
+        echo "${file_path} not found, making a copy from example"
+        cp ${file_path}_example.yaml ${file_path}.yaml
     fi
 done
 

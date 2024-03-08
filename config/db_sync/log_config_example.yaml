@@ -7,7 +7,8 @@ __main__: "DEBUG"
 rfb_cycler_db_sync: "INFO"
 db_sync.src.rfb_cycler_db_sync: "DEBUG"
 ##### DRV ######
-rfb_scpi_sniffer: "DEBUG"
+rfb_scpi_sniffer: "INFO"
+rfb_driver_db: "WARNING"
 
 ##### SYS #####
 rfb_logger_tool: "ERROR"
