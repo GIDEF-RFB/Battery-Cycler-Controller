@@ -15,18 +15,15 @@ from time import sleep, time
 from pytest import fixture, mark
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
 
-from system_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
+from rfb_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
 main_logger = SysLogLoggerC(file_log_levels="config/cycler/log_config.yaml",
                             output_sub_folder='tests')
 log: Logger = sys_log_logger_get_module_logger(name="test_mid_dabs")
-# from system_shared_tool import SysShdChanC
 #######################       THIRD PARTY IMPORTS        #######################
-# from can_sniffer import DrvCanNodeC
-from scpi_sniffer import DrvScpiSerialConfC
 #######################          MODULE IMPORTS          #######################
 sys.path.append(os.getcwd()+'/code/cycler/')
-from src.wattrex_battery_cycler.mid.mid_dabs import MidDabsPwrDevC
-from wattrex_cycler_datatypes.cycler_data import (CyclerDataDeviceC, CyclerDataDeviceTypeE,
+from src.rfb_battery_cycler.mid.mid_dabs import MidDabsPwrDevC
+from rfb_cycler_datatypes.cycler_data import (CyclerDataDeviceC, CyclerDataDeviceTypeE,
                                 CyclerDataLinkConfC, CyclerDataGenMeasC, CyclerDataExtMeasC,
                                 CyclerDataPwrModeE, CyclerDataAllStatusC)
 dev_conf = {'source': {'port': '/dev/wattrex/source/EA_2963640425', 'separator':'\n',
