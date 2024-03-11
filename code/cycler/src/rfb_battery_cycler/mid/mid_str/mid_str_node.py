@@ -13,13 +13,13 @@ from typing import List
 from func_timeout import func_timeout, FunctionTimedOut
 
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
-from system_logger_tool import sys_log_logger_get_module_logger
+from rfb_logger_tool import sys_log_logger_get_module_logger
 log = sys_log_logger_get_module_logger(__name__)
 
 #######################          PROJECT IMPORTS         #######################
-from system_shared_tool import (SysShdSharedObjC, SysShdNodeC, SysShdNodeParamsC, SysShdChanC,
+from rfb_shared_tool import (SysShdSharedObjC, SysShdNodeC, SysShdNodeParamsC, SysShdChanC,
                         SysShdNodeStatusE)
-from wattrex_cycler_datatypes.cycler_data import (CyclerDataAlarmC, CyclerDataGenMeasC,
+from rfb_cycler_datatypes.cycler_data import (CyclerDataAlarmC, CyclerDataGenMeasC,
                                               CyclerDataExtMeasC, CyclerDataAllStatusC,
                                               CyclerDataCyclerStationC, CyclerDataExpStatusE)
 
