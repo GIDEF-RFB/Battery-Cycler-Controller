@@ -12,13 +12,13 @@ from enum import Enum
 #######################       THIRD PARTY IMPORTS        #######################
 
 #######################    SYSTEM ABSTRACTION IMPORTS    #######################
-from system_logger_tool import sys_log_logger_get_module_logger, Logger
+from rfb_logger_tool import sys_log_logger_get_module_logger, Logger
 
 #######################       LOGGER CONFIGURATION       #######################
 log: Logger = sys_log_logger_get_module_logger(__name__)
 
 #######################          MODULE IMPORTS          #######################
-from wattrex_cycler_datatypes.cycler_data import (CyclerDataProfileC, CyclerDataExpStatusE,
+from rfb_cycler_datatypes.cycler_data import (CyclerDataProfileC, CyclerDataExpStatusE,
             CyclerDataBatteryC, CyclerDataExperimentC, CyclerDataCyclerStationC)
 #######################          PROJECT IMPORTS         #######################
 
