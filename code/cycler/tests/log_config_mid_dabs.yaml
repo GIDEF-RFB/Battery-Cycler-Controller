@@ -12,12 +12,11 @@ detect: "INFO"
 register: "DEBUG"
 
 ##### DRV ######
-wattrex_driver_epc: "INFO"
-can_sniffer: "INFO"
+rfb_driver_epc: "INFO"
+rfb_can_sniffer: "INFO"
 
 ##### SYS #####
-sys_abs.sys_conf: "ERROR"
-system_logger_tool: "ERROR"
-system_shared_tool: "INFO"
+rfb_logger_tool: "ERROR"
+rfb_shared_tool: "INFO"
 
 file_handlers: {}

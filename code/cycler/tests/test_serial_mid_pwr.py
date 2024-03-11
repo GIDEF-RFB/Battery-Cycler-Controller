@@ -14,7 +14,7 @@ from time import time, sleep
 from pytest import fixture, mark
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
 from rfb_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
-main_logger = SysLogLoggerC(file_log_levels="config/cycler/log_config.yaml",
+main_logger = SysLogLoggerC(file_log_levels=os.path.dirname(__file__)+"/log_config_mid_pwr.yaml",
                             output_sub_folder='tests')
 log: Logger = sys_log_logger_get_module_logger(name="test_mid_pwr")
 from rfb_shared_tool import SysShdSharedObjC, SysShdNodeStatusE
