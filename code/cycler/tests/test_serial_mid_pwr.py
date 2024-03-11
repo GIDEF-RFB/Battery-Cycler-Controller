@@ -13,20 +13,20 @@ from signal import signal, SIGINT
 from time import time, sleep
 from pytest import fixture, mark
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
-from system_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
+from rfb_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
 main_logger = SysLogLoggerC(file_log_levels="config/cycler/log_config.yaml",
                             output_sub_folder='tests')
 log: Logger = sys_log_logger_get_module_logger(name="test_mid_pwr")
-from system_shared_tool import SysShdSharedObjC, SysShdNodeStatusE
+from rfb_shared_tool import SysShdSharedObjC, SysShdNodeStatusE
 #######################       THIRD PARTY IMPORTS        #######################
-from wattrex_cycler_datatypes.cycler_data import (CyclerDataDeviceC, CyclerDataDeviceTypeE,
+from rfb_cycler_datatypes.cycler_data import (CyclerDataDeviceC, CyclerDataDeviceTypeE,
                 CyclerDataLinkConfC, CyclerDataGenMeasC, CyclerDataExtMeasC, CyclerDataAllStatusC,
                 CyclerDataMergeTagsC, CyclerDataPwrRangeC, CyclerDataInstructionC,
                 CyclerDataPwrModeE, CyclerDataPwrLimitE, CyclerDataAlarmC, CyclerDataExpStatusE)
 #######################          MODULE IMPORTS          #######################
 sys.path.append(os.getcwd()+'/code/cycler/')
-from src.wattrex_battery_cycler.mid.mid_pwr import MidPwrControlC #pylint: disable= import-error
-from src.wattrex_battery_cycler.mid.mid_meas import MidMeasNodeC #pylint: disable= import-error
+from src.rfb_battery_cycler.mid.mid_pwr import MidPwrControlC #pylint: disable= import-error
+from src.rfb_battery_cycler.mid.mid_meas import MidMeasNodeC #pylint: disable= import-error
 
 #######################              CLASS               #######################
 
