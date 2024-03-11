@@ -13,13 +13,13 @@ import os
 #######################         GENERIC IMPORTS          #######################
 sys.path.append(os.path.dirname(__file__)+'/../../')
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
-from system_logger_tool import Logger, sys_log_logger_get_module_logger
+from rfb_logger_tool import Logger, sys_log_logger_get_module_logger
 log: Logger = sys_log_logger_get_module_logger(__name__)
 
 #######################       THIRD PARTY IMPORTS        #######################
 
 #######################          PROJECT IMPORTS         #######################
-from system_config_tool import sys_conf_update_config_params
+from rfb_config_tool import sys_conf_update_config_params
 
 #######################          MODULE IMPORTS          #######################
 
