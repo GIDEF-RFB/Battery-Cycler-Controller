@@ -19,7 +19,7 @@ from rfb_driver_epc import DrvEpcDeviceC, DrvEpcDataC
 from rfb_driver_ea  import DrvEaDeviceC, DrvEaDataC
 from rfb_driver_rs  import DrvRsDeviceC, DrvRsDataC
 from rfb_driver_bk import DrvBkDeviceC
-from rfb_driver_base import DrvBaseStatusC
+from rfb_driver_bases import DrvBaseStatusC
 from rfb_driver_bms import DrvBmsDeviceC
 from rfb_driver_flow import DrvFlowDeviceC
 from rfb_cycler_datatypes.cycler_data import (CyclerDataDeviceTypeE, CyclerDataDeviceC,
@@ -172,7 +172,7 @@ class MidDabsPwrMeterC: #pylint: disable= too-many-instance-attributes
         else:
             status.pwr_dev = status.source
 
-    def update(self, gen_meas: CyclerDataGenMeasC, ext_meas: CyclerDataExtMeasC,#pylint: disable= too-many-branches
+    def update(self, gen_meas: CyclerDataGenMeasC, ext_meas: CyclerDataExtMeasC,#pylint: disable= too-many-branches, too-many-statements
                status: CyclerDataAllStatusC) -> None:
         """Update the data from the hardware sendind the corresponding messages.
         Update the variables of the class with the data received from the device.
@@ -290,6 +290,7 @@ class MidDabsPwrDevC(MidDabsPwrMeterC):
                 self.bisource.set_cv_mode(volt_ref, limit_ref)
             except ValueError as err:
                 res = CyclerDataDeviceStatusE.INTERNAL_ERROR
+                log.error(f"Error while setting CV mode {err}")
         elif self.device_type in (CyclerDataDeviceTypeE.SOURCE, CyclerDataDeviceTypeE.LOAD):
             if ((actual_voltage is not None and actual_voltage<volt_ref*1.1) and
                 (actual_current is not None and actual_current>=0)):
