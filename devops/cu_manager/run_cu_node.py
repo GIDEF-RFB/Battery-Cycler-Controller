@@ -16,12 +16,13 @@ from signal import signal, SIGINT
 from rfb_logger_tool import sys_log_logger_get_module_logger, SysLogLoggerC, Logger
 
 #######################       LOGGER CONFIGURATION       #######################
+repo_dir=os.path.dirname(__file__)+'/../../'
 if __name__ == '__main__':
-    cycler_logger = SysLogLoggerC(file_log_levels='./config/cu_manager/log_config.yaml')
+    cycler_logger = SysLogLoggerC(file_log_levels=repo_dir+'/config/cu_manager/log_config.yaml')
 log: Logger = sys_log_logger_get_module_logger(__name__)
 
 #######################          MODULE IMPORTS          #######################
-sys.path.append(os.path.dirname(__file__)+'/../../code')
+sys.path.append(repo_dir+'/../../code')
 # from cu_manager.src.rfb_cycler_cu_manager import CuManagerNodeC
 from rfb_cycler_cu_manager import CuManagerNodeC
 
@@ -51,6 +52,6 @@ if __name__ == '__main__':
     working_flag_event.set()
     cu_manager_node = CuManagerNodeC(working_flag=working_flag_event,
                                           cycle_period=1000,
-                                          cu_id_file_path='./config/cu_manager/.cu_id')
+                                          cu_id_file_path=repo_dir+'/config/cu_manager/.cu_id')
     signal(SIGINT, signal_handler)
     cu_manager_node.run()
