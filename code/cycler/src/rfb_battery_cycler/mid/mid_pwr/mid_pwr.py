@@ -11,11 +11,11 @@ from enum import Enum
 from time import time, time_ns
 #######################       THIRD PARTY IMPORTS        #######################
 
-from system_logger_tool import sys_log_logger_get_module_logger, Logger
+from rfb_logger_tool import sys_log_logger_get_module_logger, Logger
 log: Logger = sys_log_logger_get_module_logger(__name__)
 
 #######################          PROJECT IMPORTS         #######################
-from wattrex_cycler_datatypes.cycler_data import (CyclerDataPwrRangeC, CyclerDataDeviceC, #pylint: disable= wrong-import-position
+from rfb_cycler_datatypes.cycler_data import (CyclerDataPwrRangeC, CyclerDataDeviceC, #pylint: disable= wrong-import-position
                         CyclerDataInstructionC, CyclerDataDeviceTypeE, CyclerDataPwrLimitE,
                         CyclerDataGenMeasC, CyclerDataPwrModeE, CyclerDataExpStatusE,
                         CyclerDataAlarmC, CyclerDataAllStatusC)
