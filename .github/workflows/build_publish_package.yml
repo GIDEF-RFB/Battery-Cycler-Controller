@@ -56,7 +56,8 @@ jobs:
 
       - name: Publish package to TEST PyPI
         if: ${{ inputs.is-production == false }}
-        uses: pypa/gh-action-pypi-publish@b7f401de30cb6434a1e19f805ff006643653240e #realse/v1.8.10
+        uses: pypa/gh-action-pypi-publish@f8c70e705ffc13c3b4d1221169b84f12a75d6ca8
+        #pypa/gh-action-pypi-publish@b7f401de30cb6434a1e19f805ff006643653240e #realse/v1.8.10
         with:
           user: __token__
           password: ${{ secrets.TEST_PYPI_API_TOKEN }}
