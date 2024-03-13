@@ -36,6 +36,8 @@ jobs:
     name: Publish package to PyPi
     needs: build-package
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - name: Download a single artifact
         uses: actions/download-artifact@v3
@@ -48,8 +50,8 @@ jobs:
         # uses: pypa/gh-action-pypi-publish@f8c70e705ffc13c3b4d1221169b84f12a75d6ca8
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          # user: __token__
+          # password: ${{ secrets.PYPI_API_TOKEN }}
           verbose: true
           # packages-dir: ${{ inputs.package-name}}/dist/
 
