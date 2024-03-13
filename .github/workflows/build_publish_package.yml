@@ -36,8 +36,6 @@ jobs:
     name: Publish package to PyPi
     needs: build-package
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
     steps:
       - name: Download a single artifact
         uses: actions/download-artifact@v3
