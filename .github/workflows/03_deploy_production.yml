@@ -29,14 +29,14 @@ jobs:
   publish-docker-image-cycler:
     name: Publish cycler docker image
     needs: [ publish-cycler-pkg-prod, publish-extra-pkg-prod ]
-    uses: WattRex/Battery-Experiments-Manager/.github/workflows/docker_image.yml@develop
+    uses: GIDEF-RFB/Battery-Experiments-Manager/.github/workflows/docker_image.yml@develop
     secrets:
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD_RALDEA }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
     with:
       dockerfile-path: ./devops/cycler/Dockerfile.cycler
-      docker-repo-name: wattrex-cycler-node
+      docker-repo-name: rfb-cycler-node
       is-develop: false
-      docker-user: ${{ vars.DOCKER_USERNAME_RALDEA }}
+      docker-user: ${{ vars.DOCKER_USER }}
       docker-user-arg: 69976 # wattrex
       docker-group-arg: 69976 # wattrex
       docker-target: cycler_prod
@@ -44,14 +44,14 @@ jobs:
   publish-docker-image-db-sync:
     name: Publish db-sync docker image
     needs: [ publish-cycler-pkg-prod, publish-extra-pkg-prod ]
-    uses: WattRex/Battery-Experiments-Manager/.github/workflows/docker_image.yml@develop
+    uses: GIDEF-RFB/Battery-Experiments-Manager/.github/workflows/docker_image.yml@develop
     secrets:
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD_RALDEA }}
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
     with:
       dockerfile-path: ./devops/db_sync/Dockerfile.db_sync
-      docker-repo-name: wattrex-cycler-db-sync
+      docker-repo-name: rfb-cycler-db-sync
       is-develop: false
-      docker-user: ${{ vars.DOCKER_USERNAME_RALDEA }}
+      docker-user: ${{ vars.DOCKER_USER }}
       docker-user-arg: 69976 # wattrex
       docker-group-arg: 69976 # wattrex
       docker-target: db_sync_prod

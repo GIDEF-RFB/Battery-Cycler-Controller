@@ -1,2 +1,2 @@
-system_logger_tool
-wattrex_driver_mqtt
+rfb_logger_tool
+rfb_driver_mqtt

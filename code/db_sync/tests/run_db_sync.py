@@ -12,7 +12,7 @@ import threading
 #######################       THIRD PARTY IMPORTS        #######################
 
 #######################    SYSTEM ABSTRACTION IMPORTS    #######################
-from system_logger_tool import sys_log_logger_get_module_logger, SysLogLoggerC, Logger
+from rfb_logger_tool import sys_log_logger_get_module_logger, SysLogLoggerC, Logger
 
 #######################       LOGGER CONFIGURATION       #######################
 cycler_logger = SysLogLoggerC(file_log_levels='./config/db_sync/log_config.yaml',
@@ -21,7 +21,7 @@ log: Logger = sys_log_logger_get_module_logger(__name__)
 
 #######################          MODULE IMPORTS          #######################
 sys.path.append(os.path.dirname(__file__)+'/../')
-from src.wattrex_cycler_db_sync import DbSyncNodeC
+from src.rfb_cycler_db_sync import DbSyncNodeC
 
 #######################          PROJECT IMPORTS         #######################
 

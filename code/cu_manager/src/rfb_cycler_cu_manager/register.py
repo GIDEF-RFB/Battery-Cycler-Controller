@@ -12,7 +12,7 @@ from socket import socket, AF_INET, SOCK_DGRAM, gethostname
 #######################       THIRD PARTY IMPORTS        #######################
 
 #######################    SYSTEM ABSTRACTION IMPORTS    #######################
-from system_logger_tool import sys_log_logger_get_module_logger, SysLogLoggerC, Logger
+from rfb_logger_tool import sys_log_logger_get_module_logger, SysLogLoggerC, Logger
 
 #######################       LOGGER CONFIGURATION       #######################
 if __name__ == '__main__':
@@ -20,7 +20,7 @@ if __name__ == '__main__':
 log: Logger = sys_log_logger_get_module_logger(__name__)
 
 #######################          PROJECT IMPORTS         #######################
-from wattrex_cycler_datatypes.comm_data import CommDataCuC, CommDataRegisterTypeE
+from rfb_cycler_datatypes.comm_data import CommDataCuC, CommDataRegisterTypeE
 
 #######################          MODULE IMPORTS          #######################
 

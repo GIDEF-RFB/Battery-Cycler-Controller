@@ -63,3 +63,9 @@ jobs:
           verbose: true
           repository-url: https://test.pypi.org/legacy/
           packages-dir: ${{ inputs.package-name}}/dist/
+          
+  # deploy-staging:
+  #   name: Deploy cycler controller modifications to STAGING
+  #   needs: build-publish-package-on-pr
+  #   uses: ./.github/workflows/02_03_deploy_staging.yml
+
