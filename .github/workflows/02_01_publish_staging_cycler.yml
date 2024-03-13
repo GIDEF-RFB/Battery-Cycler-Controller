@@ -1,44 +1,65 @@
-# This workflow deploys battery cycler controller to development environment
+    # This workflow deploys battery cycler datatypes|cu_manager|db_sync to development environment
 
-name: Publish cycler package - STAGING
+name: Deployment of DATATYPES|CU_MANAGER|DB_SYNC
 
 on:
-
-  pull_request_review:
-    types: [submitted]
-    # branches:
-    #   - "app_diag"
-    #   - "app_man"
-    #   - "mid_meas"
-    #   - "mid_dabs"
-    #   - "mid_str"
-    #   - "mid_pwr"
+  workflow_call:
+    inputs:
+      package-name:
+        description: 'Package name'
+        type: string
+        required: true
+      package-path:
+        description: 'Package path'
+        type: string
+        required: true
+      source-path:
+        description: 'Source path'
+        type: string
+        required: true
+      is-production:
+        description: 'If true publish package to PyPi else to TestPyPi'
+        type: boolean
+        default: false
 
 jobs:
-
-  detect-folder:
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'pull_request_review' && github.event.review.state == 'approved' && contains(fromJson(vars.CYCLER_BRANCHES), github.event.pull_request.head.ref) }}
-    environment: development
-    outputs:
-      folder: ${{ steps.set-folder.outputs.folder }}
-    steps:
-      - name: "Set env variables"
-        id: set-folder
-        run: |
-          echo "folder=$(echo ${{ github.event.pull_request.head.ref }} | cut -d'_' -f 1)" >> $GITHUB_OUTPUT
-
-  build-publish-package-on-pr:
-    name: Build and publish QA and Build battery controller on ${{ github.event.pull_request.head.ref }} pull request
-    needs: detect-folder
-    uses: ./.github/workflows/build_publish_package.yml
+  build-package:
+    uses: WattRex/System-Tools/.github/workflows/build_python_package.yml@develop
     with:
-      package-name: "${{ vars.CYCLER_PACKAGE_NAME }}"
-      package-path: "code/cycler"
-      source-path: "code/cycler/src/${{ vars.CYCLER_PACKAGE_NAME }}/${{ needs.detect-folder.outputs.folder }}/${{ github.event.pull_request.head.ref }}"
-      is-production: false
+      package-name: ${{ inputs.package-name}}
+      package-path: ${{ inputs.package-path}}
+      source-path: ${{ inputs.source-path}}
+      python-version: "3.10"
+      is-test-package: ${{ !inputs.is-production }}
 
-  deploy-staging:
-    name: Deploy cycler controller modifications to STAGING
-    needs: build-publish-package-on-pr
-    uses: ./.github/workflows/02_03_deploy_staging.yml
+  publish-package:
+    name: Publish package to PyPi
+    needs: build-package
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.package-name}}
+          path: ${{ inputs.package-name}}/dist/
+
+      - name: Publish package to PyPI
+        if: ${{ inputs.is-production == true }}
+        uses: pypa/gh-action-pypi-publish@f8c70e705ffc13c3b4d1221169b84f12a75d6ca8
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_API_TOKEN }}
+          verbose: true
+          packages-dir: ${{ inputs.package-name}}/dist/
+
+      - name: Publish package to TEST PyPI
+        if: ${{ inputs.is-production == false }}
+        uses: pypa/gh-action-pypi-publish@b7f401de30cb6434a1e19f805ff006643653240e #realse/v1.8.10
+        with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          verbose: true
+          repository-url: https://test.pypi.org/legacy/
+          packages-dir: ${{ inputs.package-name}}/dist/
