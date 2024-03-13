@@ -5,10 +5,10 @@ name: Publish DATATYPES|CU_MANAGER|DB_SYNC package - STAGING
 on:
   pull_request_review:
     types: [submitted]
-    # branches:
-    #   - 'datatypes'
-    #   - 'cu_manager'
-    #   - 'db_sync'
+    branches:
+      - 'datatypes'
+      - 'cu_manager'
+      - 'db_sync'
 
 jobs:
 
