@@ -32,8 +32,6 @@ jobs:
     name: Build and publish QA and Build battery controller on ${{ github.event.pull_request.head.ref }} pull request
     needs: detect-folder
     uses: ./.github/workflows/build_publish_package.yml
-    permissions:
-      id-token: write
     with:
       package-name: "${{ vars.CYCLER_PACKAGE_NAME }}"
       package-path: "code/cycler"
