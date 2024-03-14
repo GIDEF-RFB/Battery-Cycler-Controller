@@ -12,11 +12,10 @@ detect: "INFO"
 register: "DEBUG"
 
 ##### DRV ######
-wattrex_driver_db: 'INFO'
-wattrex_cycler_datatypes.cycler_data: 'INFO'
+rfb_driver_db: 'INFO'
+rfb_cycler_datatypes.cycler_data: 'INFO'
 
 ##### SYS #####
-sys_abs.sys_conf: "ERROR"
 system_logger_tool: "ERROR"
 system_shared_tool: "INFO"
 

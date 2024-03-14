@@ -13,6 +13,8 @@ jobs:
     if: ${{ github.event_name == 'pull_request_review' && github.event.review.state == 'approved' && github.event.pull_request.head.ref == 'develop' && github.event.pull_request.base.ref == 'master' }}
     name: Build and publish cycler extra package
     uses: ./.github/workflows/publish-extra-package.yml
+    permissions:
+      id-token: write
     with:
       is-production: true
 
@@ -20,6 +22,8 @@ jobs:
     if: ${{ github.event_name == 'pull_request_review' && github.event.review.state == 'approved' && github.event.pull_request.head.ref == 'develop' && github.event.pull_request.base.ref == 'master' }}
     name: Build and publish cycler package
     uses: ./.github/workflows/build_publish_package.yml
+    permissions:
+      id-token: write
     with:
       package-name: "${{ vars.CYCLER_PACKAGE_NAME }}"
       package-path: "code/cycler"
