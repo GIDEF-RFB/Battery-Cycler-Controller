@@ -1,0 +1,43 @@
+# This workflow deploy system tools to production environment
+
+name: Manual Docker deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      is-develop:
+        description: 'To publish with different tags in docker'
+        type: boolean
+        default: true
+        required: true
+
+jobs:
+  publish-docker-image-db-sync:
+    if: ${{ github.ref_name }}=='db_sync'
+    name: Publish db-sync docker image
+    uses: GIDEF-RFB/Battery-Experiments-Manager/.github/workflows/docker_image.yml@develop
+    secrets:
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
+    with:
+      dockerfile-path: ./devops/db_sync/Dockerfile.db_sync
+      docker-repo-name: rfb-cycler-db-sync
+      is-develop: ${{ inputs.is-develop }}
+      docker-user: ${{ vars.DOCKER_USER }}
+      docker-user-arg: 69976 # wattrex
+      docker-group-arg: 69976 # wattrex
+      docker-target: db_sync_prod
+
+  publish-docker-image-cycler:
+    name: Publish cycler docker image
+    if: contains(fromJson(vars.CYCLER_BRANCHES), github.event.pull_request.head.ref)
+    uses: GIDEF-RFB/Battery-Experiments-Manager/.github/workflows/docker_image.yml@develop
+    secrets:
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
+    with:
+      dockerfile-path: ./devops/cycler/Dockerfile.cycler
+      docker-repo-name: rfb-cycler-node
+      is-develop: ${{ inputs.is-develop }}
+      docker-user: ${{ vars.DOCKER_USER }}
+      docker-user-arg: 69976 # wattrex
+      docker-group-arg: 69976 # wattrex
+      docker-target: cycler_prod
