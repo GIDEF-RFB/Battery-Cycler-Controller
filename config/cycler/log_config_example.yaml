@@ -17,8 +17,8 @@ rfb_driver_db: "ERROR"
 rfb_driver_base : "ERROR"
 rfb_driver_bms: "ERROR"
 rfb_driver_flow : "ERROR"
-can_sniffer: "INFO"
-scpi_sniffer: "ERROR"
+rfb_can_sniffer: "INFO"
+rfb_scpi_sniffer: "ERROR"
 
 ##### SYS #####
 rfb_logger_tool: "ERROR"
@@ -27,7 +27,8 @@ rfb_config_tool: "ERROR"
 
 ##### CYCLER #####
 cycler.src.rfb_battery_cycler.app.app_man: "INFO"
-rfb_cycler_datatypes.cycler_data: "INFO"
+rfb_battery_cycler: "INFO"
+rfb_cycler_datatypes: "INFO"
 mid.mid_str: "INFO"
 mid.mid_dabs  : "INFO"
 mid.mid_meas  : "INFO"

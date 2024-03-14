@@ -77,7 +77,7 @@ rfb_scpi_sniffer:
   DEFAULT_NODE_PERIOD         : 40
   DEFAULT_NODE_NAME           : 'SCPI'
   DEFAULT_CHAN_NUM_MSG        : 200 # Max number of allowed message per chan
-  DEFAULT_MAX_MSG_SIZE        : 350 # Size of message sent through IPC message queue
+  DEFAULT_MAX_MSG_SIZE        : 550 # Size of message sent through IPC message queue
   DEFAULT_TX_CHAN             : 'TX_SCPI' # Name of the TX channel in CAN
   DEFAULT_RX_CHAN             : 'RX_SCPI_'  #Name of the RX channel for epc
   DEFAULT_NUM_ATTEMPTS        : 10 # Max number of reads to get data
