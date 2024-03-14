@@ -14,7 +14,7 @@ abspath = os.path.abspath(__file__)
 dname = os.path.dirname(abspath)
 os.chdir(dname + "/../../")
 
-from system_logger_tool import sys_log_logger_get_module_logger, SysLogLoggerC, Logger
+from rfb_logger_tool import sys_log_logger_get_module_logger, SysLogLoggerC, Logger
 #######################       LOGGER CONFIGURATION       #######################
 
 if __name__ == '__main__':
@@ -23,7 +23,7 @@ if __name__ == '__main__':
 log: Logger = sys_log_logger_get_module_logger(__name__)
 
 #######################          MODULE IMPORTS          #######################
-from can_sniffer import DrvCanNodeC
+from rfb_can_sniffer import DrvCanNodeC
 
 
 #######################            FUNCTIONS             #######################
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     _working_can = Event()
     _working_can.set()
     #Create the thread for CAN
-    can = DrvCanNodeC(tx_buffer_size= 250, working_flag=_working_can, cycle_period=40)
+    can = DrvCanNodeC(working_flag=_working_can)
     try:
         can.run()
     except KeyboardInterrupt:

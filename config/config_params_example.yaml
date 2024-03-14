@@ -7,7 +7,7 @@ rfb_shared_tool:
 
 rfb_cycler_cu_manager:
   DEFAULT_TX_CAN_NAME         : 'TX_CAN'            # Default tx_can system queue name
-  DEFAULT_TX_SCPI_NAME        : 'tx_scpi'           # Default tx_scpi system queue name
+  DEFAULT_TX_SCPI_NAME        : 'TX_SCPI'           # Default tx_scpi system queue name
   DEFAULT_RX_CAN_NAME         : 'RX_CAN_QUEUE'      # Default rx_can system queue name
   DEFAULT_RX_SCPI_NAME        : 'RX_SCPI_QUEUE'     # Default rx_scpi system queue name
   DEFAULT_DETECT_TIMEOUT      : 2                   # Default time to read asked devices answers
@@ -76,9 +76,8 @@ rfb_scpi_sniffer:
   DEFAULT_TIMEOUT_RX_MSG      : 0.02
   DEFAULT_NODE_PERIOD         : 40
   DEFAULT_NODE_NAME           : 'SCPI'
-
   DEFAULT_CHAN_NUM_MSG        : 200 # Max number of allowed message per chan
-  DEFAULT_MAX_MSG_SIZE        : 350 # Size of message sent through IPC message queue
+  DEFAULT_MAX_MSG_SIZE        : 550 # Size of message sent through IPC message queue
   DEFAULT_TX_CHAN             : 'TX_SCPI' # Name of the TX channel in CAN
   DEFAULT_RX_CHAN             : 'RX_SCPI_'  #Name of the RX channel for epc
   DEFAULT_NUM_ATTEMPTS        : 10 # Max number of reads to get data
@@ -90,7 +89,7 @@ rfb_can_sniffer:
   DEFAULT_TIMEOUT_RX_MSG      : 0.02
   DEFAULT_NODE_PERIOD         : 40
   DEFAULT_NODE_NAME           : 'CAN'
-  DEFAULT_TX_NAME             :  'TX_CAN'
+  DEFAULT_TX_NAME             : 'TX_CAN'
   DEFAULT_IFACE_NAME          : 'socketcan' # Name of the CAN interface
   DEFAULT_IFACE_CHAN_NAME     : 'can0' # Name of the CAN interface channel
 

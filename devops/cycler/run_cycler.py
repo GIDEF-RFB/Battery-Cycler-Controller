@@ -12,7 +12,7 @@ from threading import Event
 #######################       THIRD PARTY IMPORTS        #######################
 
 #######################    SYSTEM ABSTRACTION IMPORTS    #######################
-from system_logger_tool import sys_log_logger_get_module_logger, SysLogLoggerC, Logger
+from rfb_logger_tool import sys_log_logger_get_module_logger, SysLogLoggerC, Logger
 
 #######################       LOGGER CONFIGURATION       #######################
 CS_ID = os.getenv("CSID")
@@ -23,9 +23,9 @@ log: Logger = sys_log_logger_get_module_logger(__name__)
 log.info(f'CS_ID: {CS_ID}')
 
 #######################          MODULE IMPORTS          #######################
-# sys.path.append(os.path.dirname(__file__)+'/../../code/')
-# from cycler.src.wattrex_battery_cycler.app.app_man import AppManNodeC
-from wattrex_battery_cycler.app.app_man import AppManNodeC
+sys.path.append(os.path.dirname(__file__)+'/../../code/')
+# from cycler.src.rfb_battery_cycler.app.app_man import AppManNodeC
+from rfb_battery_cycler.app.app_man import AppManNodeC
 
 #######################          PROJECT IMPORTS         #######################
 

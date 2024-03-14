@@ -10,6 +10,8 @@ CYCLER_SRC_DIR="${REPO_ROOT_DIR}/code/cycler"
 INT_RE='^[0-9]+$'
 DOCKER_COMPOSE_ARGS="-f ${DEVOPS_DIR}/${DOCKER_FOLDER}/${DOCKER_COMPOSE} --env-file ${CONFIG_DIR}/${ENV_FILE}"
 
+CU_SCREEN="cu_manager"
+
 ARG1=$1
 ARG2=$2
 ARG3=$3
@@ -19,9 +21,9 @@ export GROUP_ID=$(id -g)
 
 initial_deploy () {
     force_stop
-    python3 -m pip install --upgrade can-sniffer
-    python3 -m pip install --upgrade SCPI-sniffer
-    python3 -m pip install --upgrade wattrex-cycler-cu-manager
+    python3 -m pip install --upgrade rfb-can-sniffer
+    python3 -m pip install --upgrade rfb-SCPI-sniffer
+    python3 -m pip install --upgrade rfb-cycler-cu-manager
     mkdir -p "${REPO_ROOT_DIR}/log"
 
     docker compose ${DOCKER_COMPOSE_ARGS} up cache_db db_sync -d
@@ -97,6 +99,46 @@ stop_sniffer () {
     fi
 }
 
+cu_manager () {
+    if screen -ls | grep -q "$CU_SCREEN"; then
+        echo "Screen session '$CU_SCREEN' already exists. Attaching..."
+        screen -x "$CU_SCREEN"
+    else
+        echo "Creating new screen session '$CU_SCREEN'..."
+        # Start a new detached screen session and execute the Python script
+        IFS="/" read -ra folders <<< "$(pwd)"
+        IFS="/" read -ra dev_folders <<< "${DEVOPS_DIR}"
+        length=${#folders[@]}
+        length_dev=${#dev_folders[@]}
+        if (($length_dev > $length)); then
+                IFS="/" read -ra folders <<< "${DEVOPS_DIR}"
+                IFS="/" read -ra dev_folders <<< "$(pwd)"
+        fi
+        # Loop through the array of folders and print each one
+        for dev_folder in "${dev_folders[@]}"; do
+            for index in "${!folders[@]}"; do
+                if [[ "${folders[index]}" == "$dev_folder" ]]; then
+                    # echo "Deleting folder: $dev_folder"
+                    unset "folders[index]"
+                    break
+                fi
+            done
+        done
+        # echo ${folders[*]}
+        CU_DIR=$(echo "${folders[@]}" | tr ' ' '/')/cu_manager/
+        if [[ "${#folders[@]}" == "0" ]]; then
+            if [[ "${folders[0]}" == "cu_manager" ]]; then
+                CU_DIR=""
+            else
+                CU_DIR="cu_manager/"
+            fi
+        fi
+        screen -S $CU_SCREEN -h 200 -d -m ./${CU_DIR}run_cu_node.sh
+        echo "Screen session '$CU_SCREEN' created and Python script launched."
+        echo "$(screen -ls)"
+    fi
+}
+
 force_stop () {
     docker compose ${DOCKER_COMPOSE_ARGS} down
 
@@ -128,18 +170,29 @@ required_file_list=("${DEVOPS_DIR}/docker-compose.yml"
                     "${DEVOPS_DIR}/cache_db/createCacheCyclerTables.sql"
                     "${CONFIG_DIR}/.cred.env"
                     "${CONFIG_DIR}/.cred.yaml"
-                    "${CONFIG_DIR}/config_params.yaml"
-                    "${CONFIG_DIR}/scpi/log_config.yaml"
-                    "${CONFIG_DIR}/cycler/log_config.yaml"
-                    "${CONFIG_DIR}/cu_manager/log_config.yaml"
-                    "${CONFIG_DIR}/can/log_config.yaml"
-                    "${CONFIG_DIR}/db_sync/log_config.yaml" )
+                    )
+optional_file_list=("${CONFIG_DIR}/config_params"
+                    "${CONFIG_DIR}/scpi/log_config"
+                    "${CONFIG_DIR}/cycler/log_config"
+                    "${CONFIG_DIR}/cu_manager/log_config"
+                    "${CONFIG_DIR}/can/log_config"
+                    "${CONFIG_DIR}/db_sync/log_config"
+                    )
 
-for file_path in ${required_file_list}
+for file_path in ${required_file_list[@]}
 do
     if [ ! -f ${file_path} ]; then
         echo "${file_path} not found"
         exit 1
+    fi
+done
+
+for file_path in ${optional_file_list[@]}
+do
+    # echo "Checking ${file_path} file..."
+    if test ! -f ${file_path}.yaml ; then
+        echo "${file_path} not found, making a copy from example"
+        cp ${file_path}_example.yaml ${file_path}.yaml
     fi
 done
 
@@ -156,6 +209,10 @@ case ${ARG1} in
         export CYCLER_TARGET=db_sync_local
         docker compose ${DOCKER_COMPOSE_ARGS} build --build-arg UPDATE_REQS=$(date +%s) db_sync
         initial_deploy
+        ;;
+    "CU")
+        # echo "CU Manager"
+        cu_manager
         ;;
     "cycler")
         if [[ ${ARG2} =~ $INT_RE ]]; then
@@ -195,7 +252,7 @@ case ${ARG1} in
             >&2 echo "[ERROR] Invalid Cycler Station ID"
             exit 3
         fi
-        ;;
+        ;;    
     "force-stop")
         # echo "Stop all"
         force_stop

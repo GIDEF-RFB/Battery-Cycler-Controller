@@ -16,8 +16,10 @@ mid.mid_str: "DEBUG"
 rfb_driver_epc: 'WARNING'
 rfb_driver_ea: 'INFO'
 rfb_driver_rs: 'INFO'
-rfb_driver_pwr: 'INFO'
+rfb_driver_bases: 'INFO'
 rfb_driver_bk: 'INFO'
+rfb_driver_db: 'INFO'
+rfb_driver_flow: 'INFO'
 rfb_scpi_sniffer: 'INFO'
 rfb_can_sniffer: 'INFO'
 
