@@ -20,12 +20,12 @@ ARG UPDATE_REQS=default
 WORKDIR ${APP_PATH}
 ADD --chown=${UG_NAME}:${UG_NAME} ./code/cycler code/cycler
 RUN ls /cycler
-RUN pip install -r ./code/cycler/requirements.txt
+RUN pip install --upgrade -r ./code/cycler/requirements.txt
 
 FROM cycler_base as cycler_prod
 ARG UPDATE_REQS=default
 WORKDIR ${APP_PATH}
-RUN pip install rfb-battery-cycler
+RUN pip install --upgrade rfb-battery-cycler
 
 
 CMD ["python", "./devops/cycler/run_cycler.py"]
