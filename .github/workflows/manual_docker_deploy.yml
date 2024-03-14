@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       is-develop:
-        description: 'To publish with different tags in docker'
+        description: 'True for develop, false for production'
         type: boolean
         default: true
         required: true
