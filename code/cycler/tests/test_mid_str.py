@@ -14,22 +14,22 @@ from time import sleep
 from pytest import fixture, mark
 
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
-from system_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
+from rfb_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
 
 main_logger = SysLogLoggerC(file_log_levels="config/cycler/log_config.yaml",
                             output_sub_folder='tests')
 log: Logger = sys_log_logger_get_module_logger(name="test_mid_str")
-from system_shared_tool import SysShdSharedObjC, SysShdChanC
+from rfb_shared_tool import SysShdSharedObjC, SysShdChanC
 #######################       THIRD PARTY IMPORTS        #######################
-from wattrex_cycler_datatypes.cycler_data import (CyclerDataExtMeasC, CyclerDataAllStatusC,
+from rfb_cycler_datatypes.cycler_data import (CyclerDataExtMeasC, CyclerDataAllStatusC,
     CyclerDataGenMeasC, CyclerDataBatteryC, CyclerDataCyclerStationC, CyclerDataExperimentC,
     CyclerDataExpStatusE, CyclerDataProfileC, CyclerDataDeviceStatusC, CyclerDataPwrModeE)
-from wattrex_driver_db import (DrvDbSqlEngineC, DrvDbTypeE, DrvDbCacheStatusC,
+from rfb_driver_db import (DrvDbSqlEngineC, DrvDbTypeE, DrvDbCacheStatusC,
                 DrvDbCacheExtendedMeasureC, DrvDbCacheGenericMeasureC, DrvDbCacheExperimentC)
 from sqlalchemy import delete
 #######################          MODULE IMPORTS          #######################
 sys.path.append(os.getcwd()+'/code/cycler/')
-from src.wattrex_battery_cycler.mid.mid_str import (MidStrNodeC, MidStrCmdDataC, MidStrReqCmdE,
+from src.rfb_battery_cycler.mid.mid_str import (MidStrNodeC, MidStrCmdDataC, MidStrReqCmdE,
                                                     MidStrDataCmdE)
 #######################          PROJECT IMPORTS         #######################
 

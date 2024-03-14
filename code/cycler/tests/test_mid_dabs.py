@@ -6,29 +6,23 @@ This file test mid_dabs and show how it works.
 #######################        MANDATORY IMPORTS         #######################
 import os
 import sys
-from subprocess import run, PIPE
 
 #######################         GENERIC IMPORTS          #######################
-from threading import Event
 from signal import signal, SIGINT
 from time import sleep, time
 from pytest import fixture, mark
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
 
-from system_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
+from rfb_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
 main_logger = SysLogLoggerC(file_log_levels="config/cycler/log_config.yaml",
                             output_sub_folder='tests')
 log: Logger = sys_log_logger_get_module_logger(name="test_mid_dabs")
-from system_shared_tool import SysShdChanC
 #######################       THIRD PARTY IMPORTS        #######################
-from can_sniffer import DrvCanNodeC
-# from scpi_sniffer import DrvScpiHandlerC
+from rfb_cycler_datatypes.cycler_data import (CyclerDataDeviceC, CyclerDataDeviceTypeE,
+                                    CyclerDataGenMeasC, CyclerDataExtMeasC, CyclerDataAllStatusC)
 #######################          MODULE IMPORTS          #######################
 sys.path.append(os.getcwd()+'/code/cycler/')
-from src.wattrex_battery_cycler.mid.mid_dabs import MidDabsPwrDevC, MidDabsExtraMeterC
-from wattrex_cycler_datatypes.cycler_data import (CyclerDataDeviceC, CyclerDataDeviceTypeE,
-                                    CyclerDataLinkConfC, CyclerDataGenMeasC, CyclerDataPwrLimitE,
-                                        CyclerDataExtMeasC, CyclerDataAllStatusC)
+from src.rfb_battery_cycler.mid.mid_dabs import MidDabsPwrDevC, MidDabsExtraMeterC
 
 dev_conf = {'epc': '0x14',
             'source': {'port': '/dev/ttyUSB1', 'baudrate': 115200, 'timeout': 0.1},
@@ -112,22 +106,6 @@ class TestChannels:
             log.info(f"Status: {getattr(status,'extra_meter_'+str(self.bms._dev_db_id)).name}")
             sleep(2)
         self.bms.close()
-        # ######################################### SOURCE #########################################
-        # run(['sudo', 'ip', 'link', 'set', 'down', 'can0'], stdout=PIPE, stderr=PIPE)
-        # log.info("Starting test for ea source")
-        # test_dev2_info = CyclerDataDeviceC(iface_name = dev_conf['source']['port'] , model = 'b',
-        #                             manufacturer = 'c', device_type= CyclerDataDeviceTypeE.SOURCE,
-        #                             link_configuration= CyclerDataLinkConfC(**dev_conf['source']))
-        # ea_source = MidDabsPwrDevC(test_dev2_info, tx_queue)
-
-        # ea_source.set_cv_mode(5000, 500)
-        # for i in range(0,5):
-        #     ea_meas = ea_source.update()
-        #     log.info((f"Set {ea_meas.mode} with 5V 0.5A and measuring: {ea_meas.voltage}V "
-        #              f"and {ea_meas.current}A"))
-        #     sleep(1)
-        # ea_source.disable()
-        # ea_source.close()
 
 
 

@@ -10,12 +10,12 @@ from enum import Enum
 #######################         GENERIC IMPORTS          #######################
 
 #######################       THIRD PARTY IMPORTS        #######################
-from system_logger_tool import sys_log_logger_get_module_logger, Logger
+from rfb_logger_tool import sys_log_logger_get_module_logger, Logger
 log: Logger = sys_log_logger_get_module_logger(__name__)
 
-from system_shared_tool import SysShdChanC
+from rfb_shared_tool import SysShdChanC
 #######################          PROJECT IMPORTS         #######################
-from wattrex_cycler_datatypes.cycler_data import (CyclerDataExperimentC, CyclerDataProfileC,
+from rfb_cycler_datatypes.cycler_data import (CyclerDataExperimentC, CyclerDataProfileC,
                 CyclerDataBatteryC, CyclerDataExpStatusE, CyclerDataAllStatusC, CyclerDataAlarmC,
                 CyclerDataGenMeasC, CyclerDataExtMeasC, CyclerDataDeviceC)
 from mid.mid_str import MidStrReqCmdE, MidStrCmdDataC, MidStrDataCmdE #pylint: disable= import-error

@@ -1,7 +1,8 @@
-system-logger-tool
-system-shared-tool
-wattrex-driver-mqtt
-wattrex-cycler-datatypes
-scpi-sniffer
-can-sniffer
+rfb-logger-tool
+rfb-shared-tool
+rfb-config-tool
+rfb-driver-mqtt
+rfb-cycler-datatypes
+rfb-scpi-sniffer
+rfb-can-sniffer
 bitarray

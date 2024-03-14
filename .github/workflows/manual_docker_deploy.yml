@@ -31,7 +31,7 @@ jobs:
     with:
       dockerfile-path: ./devops/db_sync/Dockerfile.db_sync
       docker-repo-name: rfb-cycler-db-sync
-      is-develop: false
+      is-develop: ${{ inputs.is-develop }}
       docker-user: ${{ vars.DOCKER_USER }}
       docker-user-arg: 69976 # wattrex
       docker-group-arg: 69976 # wattrex

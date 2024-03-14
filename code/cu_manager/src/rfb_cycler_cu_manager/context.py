@@ -11,7 +11,7 @@ from __future__ import annotations
 #######################         GENERIC IMPORTS          #######################
 
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
-from system_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
+from rfb_logger_tool import Logger, SysLogLoggerC, sys_log_logger_get_module_logger
 if __name__ == "__main__":
     cycler_logger = SysLogLoggerC(file_log_levels='./log_config.yaml')
 log: Logger = sys_log_logger_get_module_logger(__name__)
@@ -19,7 +19,7 @@ log: Logger = sys_log_logger_get_module_logger(__name__)
 #######################       THIRD PARTY IMPORTS        #######################
 
 #######################          PROJECT IMPORTS         #######################
-from system_config_tool import sys_conf_update_config_params
+from rfb_config_tool import sys_conf_update_config_params
 
 #######################          MODULE IMPORTS          #######################
 
