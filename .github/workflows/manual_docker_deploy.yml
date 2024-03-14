@@ -29,7 +29,7 @@ jobs:
 
   publish-docker-image-cycler:
     name: Publish cycler docker image
-    if: contains(fromJson(vars.CYCLER_BRANCHES), github.event.pull_request.head.ref)
+    if: contains(fromJson(vars.CYCLER_BRANCHES), ${{ github.event.pull_request.head.ref }})
     uses: GIDEF-RFB/Battery-Experiments-Manager/.github/workflows/docker_image.yml@develop
     secrets:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_TOKEN }}
