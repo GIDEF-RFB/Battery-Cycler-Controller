@@ -28,6 +28,7 @@ from rfb_config_tool import sys_conf_update_config_params
 DEFAULT_TX_CAN_NAME     : str = 'TX_CAN'            # Default tx_can system queue name
 DEFAULT_TX_SCPI_NAME    : str = 'TX_SCPI'           # Default tx_scpi system queue name
 DEFAULT_RX_CAN_NAME     : str = 'RX_CAN_QUEUE'      # Default rx_can system queue name
+DEFAULT_CAN_ENABLED     : bool = False              # Default value, hardware is compatible with can
 DEFAULT_DETECT_TIMEOUT  : int = 2                   # Default time to read asked devices answers
 DEFAULT_DEV_PATH        : str = '/dev/wattrex/'     # Default path to the devices
 DEFAULT_SCPI_QUEUE_PREFIX : str = 'DET_'             # Default prefix for the scpi queues
@@ -38,7 +39,7 @@ DEFAULT_CRED_PATH       : str = './config/.cred.yaml'
 CONSTANTS_NAMES = ('DEFAULT_TX_CAN_NAME', 'DEFAULT_TX_SCPI_NAME',
                    'DEFAULT_RX_CAN_NAME', 'DEFAULT_DETECT_TIMEOUT',
                    'DEFAULT_DEV_PATH', 'DEFAULT_SCPI_QUEUE_PREFIX',
-                   'DEFAULT_CU_ID_PATH', 'DEFAULT_CRED_PATH')
+                   'DEFAULT_CU_ID_PATH', 'DEFAULT_CRED_PATH', 'DEFAULT_CAN_ENABLED')
 
 sys_conf_update_config_params(context=globals(),
                               constants_names=CONSTANTS_NAMES,
