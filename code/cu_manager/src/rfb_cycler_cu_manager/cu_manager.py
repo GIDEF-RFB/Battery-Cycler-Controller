@@ -8,7 +8,7 @@ Cum Manager
 from datetime import datetime
 from os import path
 import subprocess
-from time import sleep, time
+from time import sleep
 from threading import Event
 from typing import List, Dict
 
