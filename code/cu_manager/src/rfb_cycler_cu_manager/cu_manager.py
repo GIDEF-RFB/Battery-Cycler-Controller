@@ -8,7 +8,7 @@ Cum Manager
 from datetime import datetime
 from os import path
 import subprocess
-from time import sleep
+from time import sleep, time
 from threading import Event
 from typing import List, Dict
 
@@ -57,7 +57,6 @@ class CuManagerNodeC(SysShdNodeC):
                                                          detect_callback=self.process_detect,
                                                          store_cu_info_cb=self.store_cu_info_cb)
         self.cycler_deploy_processes : List[subprocess.Popen] = []
-        # self.sync_node : MidSyncNoceC = MidSyncNoceC()
         self.working_flag_sync : Event = Event()
         self.working_flag_sync.set()
 
@@ -156,9 +155,9 @@ class CuManagerNodeC(SysShdNodeC):
         Process the heartbeat
         '''
         log.debug("Processing heartbeat")
-        if self.__gather_heartbeat():
-            hb = CommDataHeartbeatC(cu_id=self.cu_id)
-            self.client_mqtt.publish_heartbeat(hb)
+        # hb = CommDataHeartbeatC(cu_id=self.cu_id)
+        hb = self.__gather_heartbeat(self.cu_id)
+        self.client_mqtt.publish_heartbeat(hb)
 
     def process_cycler_deploy_processes(self) -> None:
         '''
@@ -172,9 +171,26 @@ class CuManagerNodeC(SysShdNodeC):
                 self.active_cs[int(process.args[2])] = datetime.now()
 
 
-    def __gather_heartbeat(self) -> bool:
+    def __gather_heartbeat(self, cu: int) -> CommDataHeartbeatC:
         # TODO: implement this @roberto # pylint: disable=fixme
-        return True
+        res: CommDataHeartbeatC = CommDataHeartbeatC(cu_id=cu)
+        if not self.heartbeat_queue.is_empty():
+            log.debug("Heartbeat received")
+            msg_heart = self.heartbeat_queue.receive_data_unblocking()
+            if isinstance(msg_heart, int):
+                log.debug(f"Heartbeat received from cs: {msg_heart}")
+                if msg_heart in self.active_cs:
+                    self.active_cs[msg_heart] = datetime.now()
+                else:
+                    log.error(f"Received heartbeat from unknown cycler station: {msg_heart.cu_id}")
+            else:
+                log.error("Received unknown message in heartbeat queue")
+        for cs_id, time_elapse in self.active_cs.items():
+            if (datetime.now() - time_elapse).total_seconds() > 10:
+                log.info(f"CS {cs_id} disconnected")
+                del self.active_cs[cs_id]
+        res.active_cs = list(self.active_cs.keys())
+        return res
 
 
     def launch_cs(self, cs_id : int) -> None:
