@@ -44,29 +44,29 @@ sudo -u root echo $ip_conf >> /etc/dhcpcd.conf
 ip_conf="static domain_name_servers=192.168.1.254 8.8.8.8"
 sudo -u root echo $ip_conf >> /etc/dhcpcd.conf
 
-echo "${RED}STATIC IP DONE${RESET}"
+echo -e "${RED}STATIC IP DONE${RESET}"
 # Install python and pip
 sudo -u root apt-get update
 sudo -u root apt-get upgrade -y
 sudo -u root apt-get install -y python3 python3-pip
-echo "${RED}PYTHON AND PIP INSTALLED${RESET}"
+echo -e "${RED}PYTHON AND PIP INSTALLED${RESET}"
 # Install screen
 sudo -u root apt-get install -y screen
-echo "${RED}SCREEN INSTALLED${RESET}"
+echo -e "${RED}SCREEN INSTALLED${RESET}"
 # Install docker
 sudo -u root curl -fsSL https://get.docker.com -o get-docker.sh
 sudo -u root sh get-docker.sh
 
-echo "${RED}DOCKER INSTALLED${RESET}"
+echo -e "${RED}DOCKER INSTALLED${RESET}"
 # Create user, group and change password
 sudo -u root groupadd -g 69976 wattrex
 sudo -u root useradd -u 69976 -g wattrex wattrex
 sudo -u root mkhomedir_helper wattrex
-echo "${RED}NEW PASSWORD FOR WATTREX USER${RESET}"
+echo -e "${RED}NEW PASSWORD FOR WATTREX USER${RESET}"
 sudo -u root passwd wattrex
 
 # Add new user to docker group
 sudo -u root usermod -aG docker wattrex
 
-echo "${RED}DEVICE WILL REBOOT NOW${RESET}"
+echo -e "${RED}DEVICE WILL REBOOT NOW${RESET}"
 sudo -u root reboot now
