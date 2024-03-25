@@ -9,8 +9,9 @@ DOCKER_COMPOSE=docker-compose.yml
 CYCLER_SRC_DIR="${REPO_ROOT_DIR}/code/cycler"
 INT_RE='^[0-9]+$'
 DOCKER_COMPOSE_ARGS="-f ${DEVOPS_DIR}/${DOCKER_FOLDER}/${DOCKER_COMPOSE} --env-file ${CONFIG_DIR}/${ENV_FILE}"
-
+CS_VERSION=$(cat /proc/cpuinfo | grep -q "Raspberry Pi Zero W Rev 1.1")
 CU_SCREEN="cu_manager"
+CS_SCREEN="cycler"
 
 ARG1=$1
 ARG2=$2
@@ -18,6 +19,7 @@ ARG3=$3
 
 export USER_ID=$(id -u)
 export GROUP_ID=$(id -g)
+
 
 initial_deploy () {
     force_stop
@@ -37,8 +39,47 @@ instance_new_cycler () {
     check_sniffer "scpi"
     export CYCLER_TARGET=cycler_prod
 
-    #docker compose ${DOCKER_COMPOSE_ARGS} build --build-arg UPDATE_REQS=$(date +%s) cycler
-    docker compose ${DOCKER_COMPOSE_ARGS} run -d -e CSID=${1} --name wattrex_cycler_node_${1} cycler
+    if ! $CS_VERSION; then
+        docker compose ${DOCKER_COMPOSE_ARGS} run -d -e CSID=${1} --name wattrex_cycler_node_${1} cycler;
+    else
+        if screen -ls | grep -q "${CS_SCREEN}_${1}"; then
+            echo "Screen session '${CS_SCREEN}_${1}' already exists. Attaching..."
+            screen -x "${CS_SCREEN}_${1}"
+        else
+            echo "Creating new screen session '${CS_SCREEN}_${1}'..."
+            # Start a new detached screen session and execute the Python script
+            IFS="/" read -ra folders <<< "$(pwd)"
+            IFS="/" read -ra dev_folders <<< "${DEVOPS_DIR}"
+            length=${#folders[@]}
+            length_dev=${#dev_folders[@]}
+            if (($length_dev > $length)); then
+                IFS="/" read -ra folders <<< "${DEVOPS_DIR}"
+                IFS="/" read -ra dev_folders <<< "$(pwd)"
+            fi
+            # Loop through the array of folders and print each one
+            for dev_folder in "${dev_folders[@]}"; do
+                for index in "${!folders[@]}"; do
+                    if [[ "${folders[index]}" == "$dev_folder" ]]; then
+                        # echo "Deleting folder: $dev_folder"
+                        unset "folders[index]"
+                        break
+                    fi
+                done
+            done
+            # echo ${folders[*]}
+            CS_DIR=$(echo "${folders[@]}" | tr ' ' '/')/cycler/
+            if [[ "${#folders[@]}" == "0" ]]; then
+                if [[ "${folders[0]}" == "cycler" ]]; then
+                    CS_DIR=""
+                else
+                    CS_DIR="cycler/"
+                fi
+            fi
+            screen -S ${CS_SCREEN}_${1} -h 200 -d -m ./${CS_DIR}run_cycler.sh ${1}
+            echo "Screen session '${CS_SCREEN}_${1}' created and Python script launched."
+            echo "$(screen -ls)"
+        fi
+    fi
 }
 
 test_cycler () {
@@ -52,10 +93,19 @@ test_cycler () {
 
 stop_active_cycler () {
     echo "Stopping container..."
-    docker stop wattrex_cycler_node_${1}
-    if [[ $? -eq 0 ]]; then
-        echo "Removing residual container..."
-        docker container rm wattrex_cycler_node_${1}
+    if ! $CS_VERSION; then
+        docker stop wattrex_cycler_node_${1}
+        if [[ $? -eq 0 ]]; then
+            echo "Removing residual container..."
+            docker container rm wattrex_cycler_node_${1}
+        fi
+    else
+        if screen -ls | grep -q "${CS_SCREEN}_${1}"; then
+            echo "Stopping screen session '${CS_SCREEN}_${1}'..."
+            screen -S "${CS_SCREEN}_${1}" -X quit
+        else
+            echo "Screen session '${CS_SCREEN}_${1}' not found"
+        fi
     fi
 }
 
@@ -91,11 +141,13 @@ stop_sniffer () {
     if [[ ${ARG2} = "can" ]] || [[ ${1} = "can" ]]; then
         systemctl --user stop can_sniffer.service &> /dev/null
         systemctl --user disable can_sniffer.service &> /dev/null
+        rm -f /dev/mqueue/TX_CAN
     fi
 
     if [[ ${ARG2} = "scpi" ]] || [[ ${1} = "scpi" ]]; then
         systemctl --user stop scpi_sniffer.service &> /dev/null
         systemctl --user disable scpi_sniffer.service &> /dev/null
+        rm -f /dev/mqueue/TX_SCPI
     fi
 }
 
