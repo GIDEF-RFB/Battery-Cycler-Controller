@@ -265,13 +265,13 @@ case ${ARG1} in
     "build")
         # echo "Initial Deploy"
         export CYCLER_TARGET=db_sync_local
-        docker compose ${DOCKER_COMPOSE_ARGS} pull db_sync
+        docker compose ${DOCKER_COMPOSE_ARGS} build --build-arg UPDATE_REQS=$(date +%s) db_sync
         initial_deploy
         ;;
     "basic")
         # echo "Initial Deploy"
         export CYCLER_TARGET=db_sync_prod
-        docker compose ${DOCKER_COMPOSE_ARGS} build --build-arg UPDATE_REQS=$(date +%s) db_sync
+        docker compose ${DOCKER_COMPOSE_ARGS} pull db_sync
         basic_deploy
         ;;
     "CU")
