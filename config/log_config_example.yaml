@@ -1,33 +1,36 @@
---- #YAML FILE START
+---
+#YAML FILE START
+test_mid_dabs: "DEBUG"
 
 __main__: "DEBUG"
 
-##### app #####
-app.app_man: "DEBUG"
-app.app_diag: "DEBUG"
+##### DEV ######
+cu_broker_client: "DEBUG"
+cu_manager: "DEBUG"
+detect: "DEBUG"
+register: "DEBUG"
 
-##### mid #####
-mid.mid_dabs: "DEBUG"
-mid.mid_meas: "DEBUG"
-mid.mid_data: "DEBUG"
+##### DRV ######
+rfb_driver_epc: "DEBUG"
+rfb_driver_db: "DEBUG"
+rfb_driver_base : "DEBUG"
+rfb_driver_bms: "DEBUG"
+rfb_driver_flow : "DEBUG"
+rfb_can_sniffer: "DEBUG"
+rfb_scpi_sniffer: "DEBUG"
+
+##### SYS #####
+rfb_logger_tool: "DEBUG"
+rfb_shared_tool: "DEBUG"
+rfb_config_tool: "DEBUG"
+
+##### CYCLER #####
+cycler.src.rfb_battery_cycler.app.app_man: "DEBUG"
+rfb_battery_cycler: "DEBUG"
+rfb_cycler_datatypes: "DEBUG"
 mid.mid_str: "DEBUG"
+mid.mid_dabs  : "DEBUG"
+mid.mid_meas  : "DEBUG"
+mid.mid_pwr   : "DEBUG"
 
-##### drv ######
-rfb_driver_epc: 'WARNING'
-rfb_driver_ea: 'INFO'
-rfb_driver_rs: 'INFO'
-rfb_driver_bases: 'INFO'
-rfb_driver_bk: 'INFO'
-rfb_driver_db: 'INFO'
-rfb_driver_flow: 'INFO'
-rfb_scpi_sniffer: 'INFO'
-rfb_can_sniffer: 'INFO'
-
-##### sys #####
-rfb_shared_tool: "INFO"
-rfb_config_tool: "INFO"
-rfb_logger_tool: "INFO"
-
-file_handlers: {
-  # "log_can" : [ drv.drv_can, drv.drv_epc ],
-}
+file_handlers: {}

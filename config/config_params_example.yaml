@@ -5,18 +5,6 @@ rfb_shared_tool:
   DEFAULT_IPC_MSG_SIZE: 400
   DEFAULT_CHAN_TIMEOUT: 3
 
-rfb_cycler_cu_manager:
-  DEFAULT_TX_CAN_NAME         : 'TX_CAN'            # Default tx_can system queue name
-  DEFAULT_TX_SCPI_NAME        : 'TX_SCPI'           # Default tx_scpi system queue name
-  DEFAULT_RX_CAN_NAME         : 'RX_CAN_QUEUE'      # Default rx_can system queue name
-  DEFAULT_SCPI_QUEUE_PREFIX   : 'DET_'              # Default prefix for the scpi queues
-  DEFAULT_CAN_ENABLED         : False               # Default value, hardware is compatible with can
-  DEFAULT_DETECT_TIMEOUT      : 2                   # Default time to read asked devices answers
-  DEFAULT_DEV_PATH            : '/dev/wattrex/'     # Default path to the devices
-  # Default path to file which stores cu_id
-  DEFAULT_CU_ID_PATH          : './config/cu_manager/.cu_id'
-  # Default path to credential file for rabbitmq
-  DEFAULT_CRED_PATH      : './config/.cred.yaml'
 
 rfb_driver_db:
   DEFAULT_CRED_FILEPATH: '~/roberto/cycler_controler/config/.cred.yaml'
@@ -95,6 +83,20 @@ rfb_can_sniffer:
   DEFAULT_IFACE_NAME          : 'socketcan' # Name of the CAN interface
   DEFAULT_IFACE_CHAN_NAME     : 'can0' # Name of the CAN interface channel
 
+#################### CU MANAGER ####################
+rfb_cycler_cu_manager:
+  DEFAULT_TX_CAN_NAME         : 'TX_CAN'            # Default tx_can system queue name
+  DEFAULT_TX_SCPI_NAME        : 'TX_SCPI'           # Default tx_scpi system queue name
+  DEFAULT_RX_CAN_NAME         : 'RX_CAN_QUEUE'      # Default rx_can system queue name
+  DEFAULT_SCPI_QUEUE_PREFIX   : 'DET_'              # Default prefix for the scpi queues
+  DEFAULT_CAN_ENABLED         : False               # Default value, hardware is compatible with can
+  DEFAULT_DETECT_TIMEOUT      : 2                   # Default time to read asked devices answers
+  DEFAULT_DEV_PATH            : '/dev/wattrex/'     # Default path to the devices
+  # Default path to file which stores cu_id
+  DEFAULT_CU_ID_PATH          : './config/cu_manager/.cu_id'
+  # Default path to credential file for rabbitmq
+  DEFAULT_CRED_PATH      : './config/.cred.yaml'
+
 ################### CYCLER ###################
 app_man:
   DEFAULT_PERIOD_CYCLE_MAN    : 300 # Express in milliseconds
@@ -115,9 +117,18 @@ mid_dabs:
   DEFAULT_PERIOD_ELECT_MEAS   : 25 # Express in centiseconds
   DEFAULT_PERIOD_TEMP_MEAS    : 25 # Express in centiseconds
 
+##################### DB SYNC ######################
 rfb_cycler_db_sync:
   DEFAULT_CRED_FILEPATH       : './config/.cred.yaml' # Path to the location of the credential file
   DEFAULT_SYNC_NODE_NAME      : 'SYNC'
   DEFAULT_COMP_UNIT           : 2
   DEFAULT_NODE_PERIOD         : 500 # ms # Period of the node
 
+
+#################### MN MANAGER ####################
+rfb_mn_manager:
+  DEFAULT_CRED_FILEPATH               : 'devops/mn_manager/.cred.yaml' #Max number of allowed message per chan
+  DEFAULT_MN_NODE_NAME                : 'cu_manager_node'
+  DEFAULT_NODE_PERIOD                 : 750 # ms # Period of the node
+  DEFAULT_TIMEOUT_BETWEEN_CONNECTIONS : 15
+  DEFAULT_DATA_SIZE                   : 900 # Max size of the data message
