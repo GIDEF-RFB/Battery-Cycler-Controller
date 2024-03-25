@@ -34,6 +34,12 @@ initial_deploy () {
     check_sniffer "scpi"
 }
 
+basic_deploy () {
+    force_stop
+    mkdir -p "${REPO_ROOT_DIR}/log"
+    docker compose ${DOCKER_COMPOSE_ARGS} up cache_db db_sync -d
+}
+
 instance_new_cycler () {
     check_sniffer "can"
     check_sniffer "scpi"
@@ -259,8 +265,14 @@ case ${ARG1} in
     "build")
         # echo "Initial Deploy"
         export CYCLER_TARGET=db_sync_local
-        docker compose ${DOCKER_COMPOSE_ARGS} build --build-arg UPDATE_REQS=$(date +%s) db_sync
+        docker compose ${DOCKER_COMPOSE_ARGS} pull db_sync
         initial_deploy
+        ;;
+    "basic")
+        # echo "Initial Deploy"
+        export CYCLER_TARGET=db_sync_prod
+        docker compose ${DOCKER_COMPOSE_ARGS} build --build-arg UPDATE_REQS=$(date +%s) db_sync
+        basic_deploy
         ;;
     "CU")
         # echo "CU Manager"
