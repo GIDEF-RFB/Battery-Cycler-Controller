@@ -259,6 +259,7 @@ class MidPwrControlC: #pylint: disable= too-many-instance-attributes
                         status = CyclerDataExpStatusE.FINISHED
         else:
             status = CyclerDataExpStatusE.ERROR
+            self.pwr_dev.disable()
             # TODO: Add alarms callback #pylint: disable= fixme
             self.__alarm_callback(CyclerDataAlarmC(code= 0, value=0))
         return status, self.actual_inst.instr_id
