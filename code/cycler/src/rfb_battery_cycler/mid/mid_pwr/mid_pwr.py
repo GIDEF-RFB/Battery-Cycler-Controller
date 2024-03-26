@@ -242,6 +242,7 @@ class MidPwrControlC: #pylint: disable= too-many-instance-attributes
                                 status = CyclerDataExpStatusE.RUNNING
                             else:
                                 self.actual_inst.instr_id = None
+                                self.pwr_dev.disable()
                                 self.__last_mode = CyclerDataPwrModeE.DISABLE
                                 status = CyclerDataExpStatusE.FINISHED
                 else:
