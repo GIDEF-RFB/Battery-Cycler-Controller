@@ -27,8 +27,8 @@ rfb_config_tool: "ERROR"
 
 ##### CYCLER #####
 cycler.src.rfb_battery_cycler.app.app_man: "INFO"
-rfb_battery_cycler: "INFO"
-rfb_cycler_datatypes: "INFO"
+rfb_battery_cycler.app.app_man: "INFO"
+rfb_cycler_datatypes.cycler_data: "INFO"
 mid.mid_str: "INFO"
 mid.mid_dabs  : "INFO"
 mid.mid_meas  : "INFO"
