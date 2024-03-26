@@ -1,7 +1,7 @@
 ---
 
 rfb_shared_tool:
-  DEFAULT_CHAN_NUM_MSG: 75
+  DEFAULT_CHAN_NUM_MSG: 200
   DEFAULT_IPC_MSG_SIZE: 400
   DEFAULT_CHAN_TIMEOUT: 3
 
@@ -37,14 +37,14 @@ rfb_driver_bms:
   DEFAULT_TIMEOUT_RESPONSE    : 30 # Expected time to get answer from BMS
 
 rfb_driver_rs:
-  DEFAULT_MAX_MSG             : 50 # Max number of allowed message per chan
+  DEFAULT_MAX_MSG             : 100 # Max number of allowed message per chan
   DEFAULT_MAX_MESSAGE_SIZE    : 550 # Size of message sent through IPC message queue
   DEFAULT_TX_CHAN             : 'TX_SCPI' #'TX_SCPI' # Name of the TX channel in SCPI
   DEFAULT_RX_CHAN             : 'RX_SCPI_RS'  #Name of the RX channel for RS loads
   DEFAULT_MAX_READS           : 10
 
 rfb_driver_ea:
-  DEFAULT_MAX_MSG             : 50 # Max number of allowed message per chan
+  DEFAULT_MAX_MSG             : 100 # Max number of allowed message per chan
   DEFAULT_MAX_MESSAGE_SIZE    : 550 # Size of message sent through IPC message queue
   DEFAULT_TX_CHAN             : 'TX_SCPI' #'TX_SCPI' # Name of the TX channel in SCPI
   DEFAULT_RX_CHAN             : 'RX_SCPI_EA'  #Name of the RX channel for RS loads
@@ -66,7 +66,7 @@ rfb_scpi_sniffer:
   DEFAULT_TIMEOUT_RX_MSG      : 0.02
   DEFAULT_NODE_PERIOD         : 40
   DEFAULT_NODE_NAME           : 'SCPI'
-  DEFAULT_CHAN_NUM_MSG        : 100 # Max number of allowed message per chan
+  DEFAULT_CHAN_NUM_MSG        : 200 # Max number of allowed message per chan
   DEFAULT_MAX_MSG_SIZE        : 700 # Size of message sent through IPC message queue
   DEFAULT_TX_CHAN             : 'TX_SCPI' # Name of the TX channel in CAN
   DEFAULT_RX_CHAN             : 'RX_SCPI_'  #Name of the RX channel for epc
