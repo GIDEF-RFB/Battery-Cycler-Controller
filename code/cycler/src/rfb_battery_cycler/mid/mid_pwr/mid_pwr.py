@@ -183,7 +183,7 @@ class MidPwrControlC: #pylint: disable= too-many-instance-attributes
         self.actual_inst.instr_id = None
         self.pwr_limits = bat_pwr_range
 
-    def process_iteration(self) -> Tuple[CyclerDataExpStatusE, int]: #pylint: disable= too-many-branches
+    def process_iteration(self) -> Tuple[CyclerDataExpStatusE, int]: #pylint: disable= too-many-branches, too-many-statements
         """Processes a single instruction .
 
         Returns:
