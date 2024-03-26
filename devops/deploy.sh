@@ -28,7 +28,9 @@ initial_deploy () {
     python3 -m pip install --upgrade rfb-cycler-cu-manager
     mkdir -p "${REPO_ROOT_DIR}/log"
 
-    docker compose ${DOCKER_COMPOSE_ARGS} up cache_db db_sync -d
+    if ! $CS_VERSION; then
+        docker compose ${DOCKER_COMPOSE_ARGS} up cache_db db_sync -d
+    fi
 
     check_sniffer "can"
     check_sniffer "scpi"
@@ -198,7 +200,14 @@ cu_manager () {
 }
 
 force_stop () {
-    docker compose ${DOCKER_COMPOSE_ARGS} down
+    if ! $CS_VERSION; then
+        docker compose ${DOCKER_COMPOSE_ARGS} down
+    else
+        # Stop all screen sessions
+        screen -ls | grep -oP '^\s*\d+\.\w+\s+\(Detached\)$' | cut -f1 | while read -r line; do
+            screen -S "${line}" -X quit
+        done
+    fi
 
     stop_sniffer "can"
     stop_sniffer "scpi"
@@ -257,9 +266,11 @@ done
 case ${ARG1} in
     "")
         # echo "Initial Deploy"
-        export CYCLER_TARGET=db_sync_prod
-        docker compose ${DOCKER_COMPOSE_ARGS} pull db_sync
-        docker compose ${DOCKER_COMPOSE_ARGS} pull cycler
+        if ! $CS_VERSION; then
+            export CYCLER_TARGET=db_sync_prod
+            docker compose ${DOCKER_COMPOSE_ARGS} pull db_sync
+            docker compose ${DOCKER_COMPOSE_ARGS} pull cycler
+        fi
         initial_deploy
         ;;
     "build")
