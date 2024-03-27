@@ -72,7 +72,7 @@ else
 
     # Add new user to docker group
     sudo -u root usermod -aG docker wattrex
-    sudo -u root export PATH=/home/wattrex/.local/bin:$PATH
+    export PATH=/home/wattrex/.local/bin:$PATH
 
     # Add crontab
     sudo -u root sed -i '$d' /etc/rc.local
