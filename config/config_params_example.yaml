@@ -1,22 +1,10 @@
 ---
 
 rfb_shared_tool:
-  DEFAULT_CHAN_NUM_MSG: 75
+  DEFAULT_CHAN_NUM_MSG: 200
   DEFAULT_IPC_MSG_SIZE: 400
   DEFAULT_CHAN_TIMEOUT: 3
 
-rfb_cycler_cu_manager:
-  DEFAULT_TX_CAN_NAME         : 'TX_CAN'            # Default tx_can system queue name
-  DEFAULT_TX_SCPI_NAME        : 'TX_SCPI'           # Default tx_scpi system queue name
-  DEFAULT_RX_CAN_NAME         : 'RX_CAN_QUEUE'      # Default rx_can system queue name
-  DEFAULT_SCPI_QUEUE_PREFIX   : 'DET_'              # Default prefix for the scpi queues
-  DEFAULT_CAN_ENABLED         : False               # Default value, hardware is compatible with can
-  DEFAULT_DETECT_TIMEOUT      : 2                   # Default time to read asked devices answers
-  DEFAULT_DEV_PATH            : '/dev/wattrex/'     # Default path to the devices
-  # Default path to file which stores cu_id
-  DEFAULT_CU_ID_PATH          : './config/cu_manager/.cu_id'
-  # Default path to credential file for rabbitmq
-  DEFAULT_CRED_PATH      : './config/.cred.yaml'
 
 rfb_driver_db:
   DEFAULT_CRED_FILEPATH: '~/roberto/cycler_controler/config/.cred.yaml'
@@ -49,24 +37,24 @@ rfb_driver_bms:
   DEFAULT_TIMEOUT_RESPONSE    : 30 # Expected time to get answer from BMS
 
 rfb_driver_rs:
-  DEFAULT_MAX_MSG             : 50 # Max number of allowed message per chan
-  DEFAULT_MAX_MESSAGE_SIZE    : 400 # Size of message sent through IPC message queue
+  DEFAULT_MAX_MSG             : 100 # Max number of allowed message per chan
+  DEFAULT_MAX_MESSAGE_SIZE    : 550 # Size of message sent through IPC message queue
   DEFAULT_TX_CHAN             : 'TX_SCPI' #'TX_SCPI' # Name of the TX channel in SCPI
-  DEFAULT_RX_CHAN             : 'RX_SCPI_RS'  #Name of the RX channel for RS loads
+  DEFAULT_RX_CHAN             : 'RX_SCPI'  #Name of the RX channel for RS loads
   DEFAULT_MAX_READS           : 10
 
 rfb_driver_ea:
-  DEFAULT_MAX_MSG             : 50 # Max number of allowed message per chan
+  DEFAULT_MAX_MSG             : 100 # Max number of allowed message per chan
   DEFAULT_MAX_MESSAGE_SIZE    : 550 # Size of message sent through IPC message queue
   DEFAULT_TX_CHAN             : 'TX_SCPI' #'TX_SCPI' # Name of the TX channel in SCPI
-  DEFAULT_RX_CHAN             : 'RX_SCPI_EA'  #Name of the RX channel for RS loads
+  DEFAULT_RX_CHAN             : 'RX_SCPI'  #Name of the RX channel for RS loads
   DEFAULT_MAX_READS           : 10
 
 rfb_driver_bk:
   DEFAULT_MAX_MSG               : 100 # Max number of allowed message per chan
-  DEFAULT_MAX_MESSAGE_SIZE      : 400 # Size of message sent through IPC message queue
+  DEFAULT_MAX_MESSAGE_SIZE      : 550 # Size of message sent through IPC message queue
   DEFAULT_TX_CHAN               : 'TX_SCPI' #'TX_SCPI' # Name of the TX channel in CAN
-  DEFAULT_RX_CHAN               : 'RX_SCPI_BK'  #Name of the RX channel for epc
+  DEFAULT_RX_CHAN               : 'RX_SCPI'  #Name of the RX channel for epc
   DEFAULT_MAX_VOLT              : 1000 #V # Max voltage allowed
   DEFAULT_MAX_CURR              : 20 #A # Max current allowed
   DEFAULT_MAX_WAIT_TIME         : 3
@@ -78,8 +66,8 @@ rfb_scpi_sniffer:
   DEFAULT_TIMEOUT_RX_MSG      : 0.02
   DEFAULT_NODE_PERIOD         : 40
   DEFAULT_NODE_NAME           : 'SCPI'
-  DEFAULT_CHAN_NUM_MSG        : 100 # Max number of allowed message per chan
-  DEFAULT_MAX_MSG_SIZE        : 550 # Size of message sent through IPC message queue
+  DEFAULT_CHAN_NUM_MSG        : 200 # Max number of allowed message per chan
+  DEFAULT_MAX_MSG_SIZE        : 700 # Size of message sent through IPC message queue
   DEFAULT_TX_CHAN             : 'TX_SCPI' # Name of the TX channel in CAN
   DEFAULT_RX_CHAN             : 'RX_SCPI_'  #Name of the RX channel for epc
   DEFAULT_NUM_ATTEMPTS        : 10 # Max number of reads to get data
@@ -94,6 +82,20 @@ rfb_can_sniffer:
   DEFAULT_TX_NAME             : 'TX_CAN'
   DEFAULT_IFACE_NAME          : 'socketcan' # Name of the CAN interface
   DEFAULT_IFACE_CHAN_NAME     : 'can0' # Name of the CAN interface channel
+
+#################### CU MANAGER ####################
+rfb_cycler_cu_manager:
+  DEFAULT_TX_CAN_NAME         : 'TX_CAN'            # Default tx_can system queue name
+  DEFAULT_TX_SCPI_NAME        : 'TX_SCPI'           # Default tx_scpi system queue name
+  DEFAULT_RX_CAN_NAME         : 'RX_CAN_QUEUE'      # Default rx_can system queue name
+  DEFAULT_SCPI_QUEUE_PREFIX   : 'DET_'              # Default prefix for the scpi queues
+  DEFAULT_CAN_ENABLED         : False               # Default value, hardware is compatible with can
+  DEFAULT_DETECT_TIMEOUT      : 15                   # Default time to read asked devices answers
+  DEFAULT_DEV_PATH            : '/dev/wattrex/'     # Default path to the devices
+  # Default path to file which stores cu_id
+  DEFAULT_CU_ID_PATH          : './config/cu_manager/.cu_id'
+  # Default path to credential file for rabbitmq
+  DEFAULT_CRED_PATH      : './config/.cred.yaml'
 
 ################### CYCLER ###################
 app_man:
@@ -115,9 +117,18 @@ mid_dabs:
   DEFAULT_PERIOD_ELECT_MEAS   : 25 # Express in centiseconds
   DEFAULT_PERIOD_TEMP_MEAS    : 25 # Express in centiseconds
 
+##################### DB SYNC ######################
 rfb_cycler_db_sync:
   DEFAULT_CRED_FILEPATH       : './config/.cred.yaml' # Path to the location of the credential file
   DEFAULT_SYNC_NODE_NAME      : 'SYNC'
   DEFAULT_COMP_UNIT           : 2
   DEFAULT_NODE_PERIOD         : 500 # ms # Period of the node
 
+
+#################### MN MANAGER ####################
+rfb_mn_manager:
+  DEFAULT_CRED_FILEPATH               : 'devops/mn_manager/.cred.yaml' #Max number of allowed message per chan
+  DEFAULT_MN_NODE_NAME                : 'cu_manager_node'
+  DEFAULT_NODE_PERIOD                 : 750 # ms # Period of the node
+  DEFAULT_TIMEOUT_BETWEEN_CONNECTIONS : 15
+  DEFAULT_DATA_SIZE                   : 900 # Max size of the data message
