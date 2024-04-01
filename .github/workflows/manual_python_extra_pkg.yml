@@ -14,7 +14,7 @@ on:
 
 jobs:
   publish-datatypes:
-    if: ${{ github.ref_name }}=='datatypes'
+    if: ${{ github.ref == 'refs/heads/datatypes' }}
     name: Build and publish datatypes package
     uses: ./.github/workflows/build_publish_extra_package.yml
     with:
@@ -24,7 +24,7 @@ jobs:
       is-production: ${{ inputs.is-production }}
 
   publish-db_sync-pkg-prod:
-    if: ${{ github.ref_name }}=='db_sync'
+    if: ${{ github.ref == 'refs/heads/db_sync' }}
     name: Build and publish db sync package
     uses: ./.github/workflows/build_publish_extra_package.yml
     with:
@@ -34,7 +34,7 @@ jobs:
       is-production: ${{ inputs.is-production }}
 
   publish-cu_manager-pkg-prod:
-    if: ${{ github.ref_name }}=='cu_manager'
+    if: ${{ github.ref == 'refs/heads/cu_manager' }}
     name: Build and publish cu_manager package
     uses: ./.github/workflows/build_publish_extra_package.yml
     with:
