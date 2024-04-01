@@ -1,0 +1,47 @@
+# This is a basic workflow that is manually triggered
+
+name: Manual workflow
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    inputs:
+      is-production:
+        description: 'If true publish package to PyPi else to TestPyPi'
+        type: boolean
+        default: false
+
+jobs:
+  build-package-on-request:
+    name: Build package  ${{ github.ref_name }}
+    uses: GIDEF-RFB/System-Tools/.github/workflows/build_python_package_fork_repo.yml@develop
+    with:
+      package-name: "${{ vars.CYCLER_PACKAGE_NAME }}"
+      package-path: "code/cycler"
+      source-path:  "code/cycler/src/${{ vars.CYCLER_PACKAGE_NAME }}"
+      python-version: "3.10"
+      is-test-package: ${{ !inputs.is-production }}
+
+  publish-package:
+    name: Publish package ${{ github.ref_name }} to PyPi or TestPyPi
+    needs: build-package-on-request
+    runs-on: ubuntu-latest
+    environment: development
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download a single artifact
+        uses: actions/download-artifact@v3
+        with:
+          name:  ${{ vars.CYCLER_PACKAGE_NAME }}
+          path: ${{ vars.CYCLER_PACKAGE_NAME }}/dist/
+
+      - name: Publish package to PyPI
+        if: ${{ inputs.is-production == true }}
+        uses: pypa/gh-action-pypi-publish@f8c70e705ffc13c3b4d1221169b84f12a75d6ca8
+        with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          packages-dir: ${{ vars.CYCLER_PACKAGE_NAME }}/dist/
