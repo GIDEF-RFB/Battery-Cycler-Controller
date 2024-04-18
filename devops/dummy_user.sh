@@ -39,12 +39,50 @@ else
     sudo -u root udevadm control --reload && sudo -u root udevadm trigger
 
     echo -e "${RED}UDEV RULES DONE${RESET}"
+
+    sudo -u root rm /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa= "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev"
+    sudo -u root echo $wpa >> /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa= "update_config=1"
+    sudo -u root echo $wpa >> /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa= ""
+    sudo -u root echo $wpa >> /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa= "network={"
+    sudo -u root echo $wpa >> /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa= '        ssid="LIFTEC-BFR50-E"'
+    sudo -u root echo $wpa >> /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa= '        psk="Iuchaeph9d"'
+    sudo -u root echo $wpa >> /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa= '        priority=5'
+    sudo -u root echo $wpa >> /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa= '}'
+    sudo -u root echo $wpa >> /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa= "network={"
+    sudo -u root echo $wpa >> /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa= '        ssid="dlink-CE4E"'
+    sudo -u root echo $wpa >> /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa= '        psk="kpjja63799"'
+    sudo -u root echo $wpa >> /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa= '        priority=2'
+    sudo -u root echo $wpa >> /etc/wpa_supplicant/wpa_supplicant.conf
+    wpa= '}'
+    sudo -u root echo $wpa >> /etc/wpa_supplicant/wpa_supplicant.conf
     # Set static ip
-    ip_conf="interface wlan0"
+    ip_conf="ssid LIFTEC-BFR50-E"
     sudo -u root echo $ip_conf >> /etc/dhcpcd.conf
     ip_conf="static ip_address=10.15.2.${1}/24"
     sudo -u root echo $ip_conf >> /etc/dhcpcd.conf
     ip_conf="static routers=10.15.2.65"
+    sudo -u root echo $ip_conf >> /etc/dhcpcd.conf
+    ip_conf="static domain_name_servers=192.168.1.254 8.8.8.8"
+    sudo -u root echo $ip_conf >> /etc/dhcpcd.conf
+    
+    # Set static ip
+    ip_conf="ssid dlink-CE4E"
+    sudo -u root echo $ip_conf >> /etc/dhcpcd.conf
+    ip_conf="static ip_address=172.16.0.${1}/24"
+    sudo -u root echo $ip_conf >> /etc/dhcpcd.conf
+    ip_conf="static routers=172.16.0.1"
     sudo -u root echo $ip_conf >> /etc/dhcpcd.conf
     ip_conf="static domain_name_servers=192.168.1.254 8.8.8.8"
     sudo -u root echo $ip_conf >> /etc/dhcpcd.conf
