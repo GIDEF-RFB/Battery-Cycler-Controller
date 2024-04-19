@@ -38,8 +38,8 @@ jobs:
     needs: build-package
     runs-on: ubuntu-latest
     environment: development
-    # permissions:
-    #   id-token: write
+    permissions:
+      id-token: write
     steps:
       - name: Download a single artifact
         uses: actions/download-artifact@v3
