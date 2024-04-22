@@ -220,7 +220,7 @@ class MidDabsPwrMeterC: #pylint: disable= too-many-instance-attributes
             log.debug(f"Source mode: {res_source.mode.name}, {res_source.mode.value}")
             log.debug(f"Load mode: {res_load.mode.name}, {res_load.mode.value}")
             if res_source.power >= res_load.power:
-                gen_meas.voltage = res_source.voltage
+                gen_meas.voltage = res_load.voltage
                 gen_meas.current = res_source.current
                 gen_meas.power   = res_source.power
                 status.pwr_mode = CyclerDataPwrModeE(res_source.mode.value)

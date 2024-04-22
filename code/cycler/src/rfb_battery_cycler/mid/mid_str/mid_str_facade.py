@@ -67,6 +67,14 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
         self.status_id: int = 0
         self.alarm_id: int = 0
 
+    def check_connection(self) -> None:
+        """Check if the connection to the database is working.
+        Returns:
+            [bool]: [description]
+        """
+        self.__master_db.check_connection()
+        self.__cache_db.check_connection()
+
     def get_start_queued_exp(self) -> Tuple[CyclerDataExperimentC|None, CyclerDataBatteryC|None,
                                             CyclerDataProfileC|None]:
         '''
@@ -100,7 +108,7 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
             exp_db = DrvDbCacheExperimentC()
             transform_experiment_db(source= exp_result, target = exp_db)
             exp_db.Status = DrvDbExpStatusE.RUNNING.value
-            exp_db.DateBegin = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+            exp_db.DateBegin = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             self.__cache_db.session.add(exp_db)
             log.debug(f"Experiment fetched: {exp.__dict__}, {battery.__dict__}, {profile.__dict__}")
         else:
@@ -364,8 +372,8 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
             exp_db = DrvDbCacheExperimentC()
             transform_experiment_db(source= exp_result, target = exp_db)
             exp_db.Status = DrvDbExpStatusE.ERROR.value
-            exp_db.DateBegin = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-            exp_db.DateFinish = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+            exp_db.DateBegin = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            exp_db.DateFinish = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             self.__cache_db.session.add(exp_db)
 
     def commit_changes(self):

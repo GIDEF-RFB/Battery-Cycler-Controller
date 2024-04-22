@@ -14,15 +14,18 @@ register: "DEBUG"
 ##### DRV ######
 rfb_driver_epc: "ERROR"
 rfb_driver_db: "ERROR"
-rfb_driver_base : "ERROR"
+rfb_driver_bases : "ERROR"
+rfb_driver_ea: "ERROR"
+rfb_driver_rs: "ERROR"
+rfb_driver_bk: "ERROR"
 rfb_driver_bms: "ERROR"
 rfb_driver_flow : "ERROR"
-rfb_can_sniffer: "INFO"
+rfb_can_sniffer: "ERROR"
 rfb_scpi_sniffer: "ERROR"
 
 ##### SYS #####
 rfb_logger_tool: "ERROR"
-rfb_shared_tool: "INFO"
+rfb_shared_tool: "ERROR"
 rfb_config_tool: "ERROR"
 
 ##### CYCLER #####
