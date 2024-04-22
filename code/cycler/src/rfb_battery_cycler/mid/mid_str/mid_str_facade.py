@@ -202,7 +202,7 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
         result = self.__master_db.session.execute(stmt).one()[0]
         return result
 
-    def get_cycler_station_info(self) -> CyclerDataCyclerStationC|None: #pylint: disable= too-many-locals
+    def get_cycler_station_info(self) -> CyclerDataCyclerStationC|None: #pylint: disable= too-many-locals, too-many-branches, too-many-statements
         """Returns the name and name of the cycle station for the experiment .
         Returns:
             [CyclerDataCyclerStationC]: [description]
