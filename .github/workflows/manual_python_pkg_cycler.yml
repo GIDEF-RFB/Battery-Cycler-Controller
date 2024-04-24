@@ -1,6 +1,6 @@
 # This is a basic workflow that is manually triggered
 
-name: Manual workflow
+name: Manual cycler publish
 
 # Controls when the action will run. Workflow runs when manually triggered using the UI
 # or API.
@@ -14,7 +14,7 @@ on:
 
 jobs:
   build-package-on-request:
-    name: Build package  ${{ github.ref_name }}
+    name: Build package  "${{ vars.CYCLER_PACKAGE_NAME }}"
     uses: GIDEF-RFB/System-Tools/.github/workflows/build_python_package_fork_repo.yml@develop
     with:
       package-name: "${{ vars.CYCLER_PACKAGE_NAME }}"
@@ -24,7 +24,7 @@ jobs:
       is-test-package: ${{ !inputs.is-production }}
 
   publish-package:
-    name: Publish package ${{ github.ref_name }} to PyPi or TestPyPi
+    name: Publish package "${{ vars.CYCLER_PACKAGE_NAME }}" to PyPi or TestPyPi
     needs: build-package-on-request
     runs-on: ubuntu-latest
     environment: development
@@ -40,8 +40,14 @@ jobs:
 
       - name: Publish package to PyPI
         if: ${{ inputs.is-production == true }}
-        uses: pypa/gh-action-pypi-publish@f8c70e705ffc13c3b4d1221169b84f12a75d6ca8
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          user: __token__
-          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          packages-dir: ${{ vars.CYCLER_PACKAGE_NAME }}/dist/
+
+      - name: Publish package to TEST PyPI
+        if: ${{ inputs.is-production == false }}
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          verbose: true
+          repository-url: https://test.pypi.org/legacy/
           packages-dir: ${{ vars.CYCLER_PACKAGE_NAME }}/dist/
