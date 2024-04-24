@@ -232,7 +232,7 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
                 if att_name == "device_type":
                     setattr(device, att_name, CyclerDataDeviceTypeE(getattr(comp_dev_res,db_name)))
                     device.check_power_device()
-                    log.critical(device.device_type)
+                    log.info(device.device_type)
                 elif att_name == "iface_name":
                     if comp_dev_res.DeviceType is DrvDbDeviceTypeE.SOURCE.value:
                         setattr(device, att_name,
