@@ -4,7 +4,7 @@
 __main__: "DEBUG"
 
 ##### DRV ######
-rfb_scpi_sniffer: "DEBUG"
+rfb_scpi_sniffer: "INFO"
 
 ##### SYS #####
 rfb_config_tool: "ERROR"
