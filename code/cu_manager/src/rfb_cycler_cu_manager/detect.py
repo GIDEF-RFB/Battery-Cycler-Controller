@@ -47,9 +47,10 @@ comp_dev = {
             # , 'Model_1': 4, 'Model_2': 5, 'Model_3': 6, 'Model_4': 7, 'Model_5': 8,
             # 'Model_6': 9, 'Model_7': 10, 'Model_8': 11, 'Model_9': 12, 'Model_A': 13,
             # 'Model_B': 14, 'Model_C': 15, 'Model_D': 16, 'Model_E': 17},
-    'EA': {'VIRTUAL': 1, 'PS_2042-20_B': 4, 'PSB_10200-420': 6},
+    'EA': {'VIRTUAL': 1, 'PS_2042-20_B': 4, 'PSB_10200-420': 6, 'PSB_2384-05_B': 7,
+           'PSB_9080-120': 10, 'PSB_10500-180': 11, 'PS_2042-06B':9},
     'RS': {'RS-KEL103': 5},
-    'BK': {},
+    'BK': {'2831E': 8},
     'BMS': 3,
     'FLOW': {},
 }
@@ -361,7 +362,7 @@ class DetectorC: #pylint: disable= too-many-instance-attributes
                 try:
                     self.__rx_scpi[bisource_name] = SysShdIpcChanC(
                                                 name= DEFAULT_SCPI_QUEUE_PREFIX+bisource_name,
-                                                max_message_size=400)
+                                                max_message_size=600)
                 except Exception as exc:
                     log.error(f"Error creating queue for bisource: {exc}")
                     self.close()

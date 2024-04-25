@@ -163,7 +163,7 @@ class CuManagerNodeC(SysShdNodeC):
         '''
         Process the cycler deploy processes
         '''
-        for process in self.cycler_deploy_processes:
+        for process in list(self.cycler_deploy_processes):
             if process.poll() is not None:
                 self.cycler_deploy_processes.remove(process)
                 log.info(f"CS deployed: {process.args[2]}")
@@ -185,7 +185,8 @@ class CuManagerNodeC(SysShdNodeC):
                     log.error(f"Received heartbeat from unknown cycler station: {msg_heart.cu_id}")
             else:
                 log.error("Received unknown message in heartbeat queue")
-        for cs_id, time_elapse in self.active_cs.items():
+        active_cs = self.active_cs
+        for cs_id, time_elapse in active_cs.items():
             if (datetime.now() - time_elapse).total_seconds() > 10:
                 log.info(f"CS {cs_id} disconnected")
                 del self.active_cs[cs_id]

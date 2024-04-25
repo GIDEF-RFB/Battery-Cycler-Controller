@@ -2,7 +2,7 @@
 
 rfb_shared_tool:
   DEFAULT_CHAN_NUM_MSG: 200
-  DEFAULT_IPC_MSG_SIZE: 400
+  DEFAULT_IPC_MSG_SIZE: 750
   DEFAULT_CHAN_TIMEOUT: 3
 
 
@@ -49,6 +49,7 @@ rfb_driver_ea:
   DEFAULT_TX_CHAN             : 'TX_SCPI' #'TX_SCPI' # Name of the TX channel in SCPI
   DEFAULT_RX_CHAN             : 'RX_SCPI'  #Name of the RX channel for RS loads
   DEFAULT_MAX_READS           : 10
+  DEFAULT_MAX_REQUESTS        : 10 # Number of requests made after sending again the message
 
 rfb_driver_bk:
   DEFAULT_MAX_MSG               : 100 # Max number of allowed message per chan
