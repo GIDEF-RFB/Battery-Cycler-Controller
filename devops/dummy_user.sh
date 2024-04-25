@@ -13,19 +13,19 @@ else
     detect_devices="SUBSYSTEMS==\"usb\", IMPORT{builtin}=\"usb_id\"
 
 # Detect BK
-KERNEL==\"ttyUSB*\", ENV{ID_MODEL}==\"2831E_Multimeter\", SYMLINK+=\"wattrex/bk/BK_$env{ID_SERIAL_SHORT}\", GROUP=\"wattrex\", MODE=\"0660\", GOTO=\"label_end\"
+KERNEL==\"ttyUSB*\", ENV{ID_MODEL}==\"2831E_Multimeter\", SYMLINK+=\"wattrex/bk/BK_\$env{ID_SERIAL_SHORT}\", GROUP=\"wattrex\", MODE=\"0660\", GOTO=\"label_end\"
 
 # Detect Source
-KERNEL==\"ttyACM*\", ATTRS{manufacturer}==\"EA*\", ATTRS{product}==\"PS*\", SYMLINK+=\"wattrex/source/EA_$env{ID_SERIAL_SHORT}\", GROUP=\"wattrex\", MODE=\"0660\", GOTO=\"label_end\"
+KERNEL==\"ttyACM*\", ATTRS{manufacturer}==\"EA*\", ATTRS{product}==\"PS*\", SYMLINK+=\"wattrex/source/EA_\$env{ID_SERIAL_SHORT}\", GROUP=\"wattrex\", MODE=\"0660\", GOTO=\"label_end\"
 
 # Detect BiSource
-KERNEL==\"ttyACM*\", ATTRS{manufacturer}==\"EPS*\", ATTRS{product}==\"PSB*\", SYMLINK+=\"wattrex/bisource/EPS_$env{ID_SERIAL_SHORT}\", GROUP=\"wattrex\", MODE=\"0660\", GOTO=\"label_end\"
+KERNEL==\"ttyACM*\", ATTRS{manufacturer}==\"EPS*\", ATTRS{product}==\"PSB*\", SYMLINK+=\"wattrex/bisource/EPS_\$env{ID_SERIAL_SHORT}\", GROUP=\"wattrex\", MODE=\"0660\", GOTO=\"label_end\"
 
 # Detect Loads
-KERNEL==\"ttyACM*\", ATTRS{manufacturer}==\"nuvoton\", ATTRS{product}==\"KORAD USB Mode\", SYMLINK+=\"wattrex/loads/RS_$env{ID_SERIAL_SHORT}\", GROUP=\"wattrex\", MODE=\"0660\", GOTO=\"label_end\"
+KERNEL==\"ttyACM*\", ATTRS{manufacturer}==\"nuvoton\", ATTRS{product}==\"KORAD USB Mode\", SYMLINK+=\"wattrex/loads/RS_\$env{ID_SERIAL_SHORT}\", GROUP=\"wattrex\", MODE=\"0660\", GOTO=\"label_end\"
 
 # Detect Arduino
-KERNEL==\"ttyACM*\", ATTRS{manufacturer}==\"Arduino*\", SYMLINK+=\"wattrex/arduino_$env{ID_SERIAL_SHORT}\", GOTO=\"label_end\"
+KERNEL==\"ttyACM*\", ATTRS{manufacturer}==\"Arduino*\", SYMLINK+=\"wattrex/arduino_\$env{ID_SERIAL_SHORT}\", GOTO=\"label_end\"
 
 LABEL=\"label_end\"
 "
