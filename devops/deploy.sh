@@ -9,7 +9,8 @@ DOCKER_COMPOSE=docker-compose.yml
 CYCLER_SRC_DIR="${REPO_ROOT_DIR}/code/cycler"
 INT_RE='^[0-9]+$'
 DOCKER_COMPOSE_ARGS="-f ${DEVOPS_DIR}/${DOCKER_FOLDER}/${DOCKER_COMPOSE} --env-file ${CONFIG_DIR}/${ENV_FILE}"
-CS_VERSION=$(cat /proc/cpuinfo | grep -q "Raspberry Pi Zero W Rev 1.1")
+cat /proc/cpuinfo | grep -q "Raspberry Pi Zero W Rev 1.1"
+CS_VERSION=$?
 CU_SCREEN="cu_manager"
 CS_SCREEN="cycler"
 
@@ -28,7 +29,7 @@ initial_deploy () {
     python3 -m pip install --upgrade rfb-cycler-cu-manager
     mkdir -p "${REPO_ROOT_DIR}/log"
 
-    if ! $CS_VERSION; then
+    if [ ! $CS_VERSION -eq 0 ]; then
         docker compose ${DOCKER_COMPOSE_ARGS} up cache_db db_sync -d
     fi
 
@@ -47,7 +48,7 @@ instance_new_cycler () {
     check_sniffer "scpi"
     export CYCLER_TARGET=cycler_prod
 
-    if ! $CS_VERSION; then
+    if [ ! $CS_VERSION -eq 0 ]; then
         docker compose ${DOCKER_COMPOSE_ARGS} run -d -e CSID=${1} --name wattrex_cycler_node_${1} cycler;
     else
         if screen -ls | grep -q "${CS_SCREEN}_${1}"; then
@@ -101,7 +102,7 @@ test_cycler () {
 
 stop_active_cycler () {
     echo "Stopping container..."
-    if ! $CS_VERSION; then
+    if [ ! $CS_VERSION -eq 0 ]; then
         docker stop wattrex_cycler_node_${1}
         if [[ $? -eq 0 ]]; then
             echo "Removing residual container..."
@@ -200,7 +201,7 @@ cu_manager () {
 }
 
 force_stop () {
-    if ! $CS_VERSION; then
+    if [ ! $CS_VERSION -eq 0 ]; then
         docker compose ${DOCKER_COMPOSE_ARGS} down
     else
         # Stop all screen sessions
@@ -266,7 +267,7 @@ done
 case ${ARG1} in
     "")
         # echo "Initial Deploy"
-        if ! $CS_VERSION; then
+        if [ ! $CS_VERSION -eq 0 ]; then
             export CYCLER_TARGET=db_sync_prod
             docker compose ${DOCKER_COMPOSE_ARGS} pull db_sync
             docker compose ${DOCKER_COMPOSE_ARGS} pull cycler
