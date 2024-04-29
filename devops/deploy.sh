@@ -161,6 +161,8 @@ stop_sniffer () {
 }
 
 cu_manager () {
+    check_sniffer "can"
+    check_sniffer "scpi"
     if screen -ls | grep -q "$CU_SCREEN"; then
         echo "Screen session '$CU_SCREEN' already exists. Attaching..."
         screen -x "$CU_SCREEN"
