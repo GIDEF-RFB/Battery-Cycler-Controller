@@ -22,7 +22,7 @@ create table if not exists Alarm
 (
     ExpID           mediumint       unsigned    not null,
     AlarmID         mediumint       unsigned    not null,
-    Timestamp       datetime                    not null,
+    Timestamp       DATETIME(3)                    not null,
     Code            mediumint       unsigned    not null,
     Value           mediumint                   not null,
 
@@ -39,7 +39,7 @@ create table if not exists StatusCache
     StatusID        mediumint       unsigned    not null,
     ExpID           mediumint       unsigned    not null,
     DevID           mediumint       unsigned    not null,
-    Timestamp       datetime                    not null,
+    Timestamp       DATETIME(3)                    not null,
     Status          enum ('OK', 'COMM_ERROR', 'INTERNAL_ERROR') not null,
     ErrorCode       smallint        unsigned    not null,
 
@@ -55,7 +55,7 @@ create table if not exists GenericMeasuresCache
 (
     ExpID           mediumint       unsigned    not null,
     MeasID          int             unsigned    not null,
-    Timestamp       datetime                    not null,
+    Timestamp       DATETIME(3)                    not null,
     InstrID         mediumint       unsigned    not null,
     Voltage         mediumint                   not null,
     Current         mediumint                   not null,
