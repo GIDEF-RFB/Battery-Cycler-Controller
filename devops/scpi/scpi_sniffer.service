@@ -4,9 +4,9 @@ Description=scpi_sniffer
 #Service that has to be started before this one is started
 After=default.target
 #Max number of retries in a specified time interval
-StartLimitBurst=3
+StartLimitBurst=2
 #Time interval
-StartLimitIntervalSec=15
+StartLimitIntervalSec=30
 
 [Service]
 #Type of service
@@ -14,10 +14,11 @@ Type=simple
 #Restart policy
 Restart=always
 #Restart service after 3 seconds if it crashes
-RestartSec=3
+RestartSec=7
 
 #Instructions executed before the service execution
-#ExecStartPre=
+Environment=USER_HOME=%h
+ExecStartPre=/bin/bash -c "/$USER_HOME/service_checks.sh"
 
 #Main service execution
 ExecStart=/usr/bin/python3 ${SRC_PATH}/scpi/scpi_node.py
