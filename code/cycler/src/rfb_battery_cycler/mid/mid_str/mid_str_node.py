@@ -11,7 +11,7 @@ from typing import List
 
 #######################       THIRD PARTY IMPORTS        #######################
 from func_timeout import func_timeout, FunctionTimedOut
-
+from sqlalchemy.exc import DatabaseError
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
 from rfb_logger_tool import sys_log_logger_get_module_logger
 log = sys_log_logger_get_module_logger(__name__)
@@ -149,6 +149,8 @@ class MidStrNodeC(SysShdNodeC): #pylint: disable= too-many-instance-attributes
         """AI is creating summary for process_iteration
         """
         try:
+            # Check if the db are connected
+            self.db_iface.check_connection()
             # Syncronising shared data
             self.sync_shd_data()
             # Receive and write alarms
@@ -178,6 +180,10 @@ class MidStrNodeC(SysShdNodeC): #pylint: disable= too-many-instance-attributes
             log.warning(("Timeout during commit changes to local database."
                          f"Database connection will be restarted. {exc}"))
             self.status = SysShdNodeStatusE.COMM_ERROR
+            self.db_iface.reset_db_connection()
+        except DatabaseError as exc:
+            self.status = SysShdNodeStatusE.COMM_ERROR
+            log.critical(f"Database error in str node {exc}")
             self.db_iface.reset_db_connection()
         except ConnectionError as exc:
             self.status = SysShdNodeStatusE.COMM_ERROR

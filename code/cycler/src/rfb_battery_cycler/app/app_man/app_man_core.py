@@ -235,7 +235,10 @@ class AppManCoreC: #pylint: disable=too-many-instance-attributes
         """Execute the experiment
         """
         # First step is to update the local data in power
+        exp_status = self.exp_status
         self.exp_status, self.__local_gen_meas.instr_id = self.pwr_control.process_iteration()
+        if exp_status != self.exp_status:
+            log.info(f"Experiment status changed to {self.exp_status}")
         self.__update_exp_status(self.exp_status)
 
     def execute_machine_status(self) -> None: #pylint: disable=too-many-branches, too-many-statements
@@ -289,7 +292,7 @@ class AppManCoreC: #pylint: disable=too-many-instance-attributes
                 log.debug("Executing experiment")
                 self.__execute_experiment()
                 ## Check if the experiment has finish and try to get the next one
-                log.info(f"Experiment status: {self.exp_status}")
+                # log.info(f"Experiment status: {self.exp_status}")
                 if self.exp_status in (CyclerDataExpStatusE.FINISHED,
                                         CyclerDataExpStatusE.ERROR):
                     self.experiment = None

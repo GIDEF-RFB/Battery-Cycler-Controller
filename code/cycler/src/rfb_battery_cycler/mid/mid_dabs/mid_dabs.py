@@ -210,6 +210,10 @@ class MidDabsPwrMeterC: #pylint: disable= too-many-instance-attributes
             gen_meas.current = res_bisource.current
             gen_meas.power   = res_bisource.power
             status.pwr_mode = CyclerDataPwrModeE(res_bisource.mode.value)
+            # if self.mapping_bisource is not None:
+            #     for key in self.mapping_bisource.keys():
+            #         setattr(ext_meas, key+'_'+str(self.mapping_load[key]),
+            #                 getattr(res_bisource, key))
         elif self.device_type in (CyclerDataDeviceTypeE.SOURCE, CyclerDataDeviceTypeE.LOAD):
             res_source: DrvEaDataC = self.source.get_data()
             status.source = CyclerDataDeviceStatusC(error= res_source.status.error_code,
@@ -220,7 +224,7 @@ class MidDabsPwrMeterC: #pylint: disable= too-many-instance-attributes
             log.debug(f"Source mode: {res_source.mode.name}, {res_source.mode.value}")
             log.debug(f"Load mode: {res_load.mode.name}, {res_load.mode.value}")
             if res_source.power >= res_load.power:
-                gen_meas.voltage = res_source.voltage
+                gen_meas.voltage = res_load.voltage
                 gen_meas.current = res_source.current
                 gen_meas.power   = res_source.power
                 status.pwr_mode = CyclerDataPwrModeE(res_source.mode.value)
