@@ -2,6 +2,7 @@
 
 DEVOPS_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" && pwd )
 REPO_ROOT_DIR=$( cd "${DEVOPS_DIR}/../" && pwd)
+USER_DIR=$(cd -- && pwd)
 CONFIG_DIR="${REPO_ROOT_DIR}/config"
 ENV_FILE=".cred.env"
 DOCKER_FOLDER=./
@@ -111,7 +112,7 @@ stop_active_cycler () {
     else
         if screen -ls | grep -q "${CS_SCREEN}_${1}"; then
             echo "Stopping screen session '${CS_SCREEN}_${1}'..."
-            screen -S "${CS_SCREEN}_${1}" -X quit
+            screen -S "${CS_SCREEN}_${1}" -X stuff '^C'
         else
             echo "Screen session '${CS_SCREEN}_${1}' not found"
         fi
@@ -119,6 +120,11 @@ stop_active_cycler () {
 }
 
 check_sniffer () {
+    if [ ! -f "${USER_DIR}/service_checks.sh" ]; then
+        echo "Service check doesn´t exist"
+        cp ${DEVOPS_DIR}/service_checks.sh ${USER_DIR}/service_checks.sh
+        chmod +x ${USER_DIR}/service_checks.sh
+    fi
     if [[ ${ARG2} = "can" ]] || [[ ${1} = "can" ]]; then
         systemctl --user status can_sniffer.service > /dev/null
         if ! [[ $? -eq 0 ]]; then
@@ -330,7 +336,7 @@ case ${ARG1} in
             >&2 echo "[ERROR] Invalid Cycler Station ID"
             exit 3
         fi
-        ;;    
+        ;;
     "force-stop")
         # echo "Stop all"
         force_stop
