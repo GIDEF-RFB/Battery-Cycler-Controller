@@ -13,8 +13,8 @@ StartLimitIntervalSec=30
 Type=simple
 #Restart policy
 Restart=always
-#Restart service after 3 seconds if it crashes
-RestartSec=7
+#Restart service after 10 seconds if it crashes
+RestartSec=10
 
 #Instructions executed before the service execution
 Environment=USER_HOME=%h

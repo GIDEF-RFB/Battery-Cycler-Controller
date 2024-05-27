@@ -100,7 +100,8 @@ network={
     sudo -u root echo "sudo sh -c 'echo 400 > /proc/sys/fs/mqueue/msg_max'" >> /etc/rc.local
     sudo -u root echo "sudo sh -c 'echo 900 > /proc/sys/fs/mqueue/msgsize_max'" >> /etc/rc.local
     sudo -u root echo "exit 0" >> /etc/rc.local
-    
+    sudo -u root loginctl enable-linger wattrex
+    sudo -u root echo "KillUserProcesses=no" >> /etc/systemd/logind.conf
     # Add scpi and can0 configuration
     if ! $CS_VERSION; then 
         interface_conf="dtparam=spi=on
