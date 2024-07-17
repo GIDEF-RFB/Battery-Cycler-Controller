@@ -38,15 +38,19 @@ LABEL=\"label_end\"
     # Configure wifi
     sudo -u root head -n 2 /etc/wpa_supplicant/wpa_supplicant.conf > temp.conf
     sudo -u root mv temp.conf /etc/wpa_supplicant/wpa_supplicant.conf
+    echo "Please enter LIFTEC-BFR50-E wifi password: "
+    read password_liftec
+    echo "Please enter dlink-CE4E (nave) wifi password: "
+    read password_nave
     wpa="network={
 	ssid=\"LIFTEC-BFR50-E\"
-	psk=\"Iuchaeph9d\"
+	psk=\"$password_liftec\"
 	priority=5
 }
 
 network={
 	ssid=\"dlink-CE4E\"
-	psk=\"kpjja63799\"
+	psk=\"$password_nave\"
 	priority=2
 }"
     sudo -u root echo "$wpa" >> /etc/wpa_supplicant/wpa_supplicant.conf
