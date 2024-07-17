@@ -26,6 +26,7 @@ log.info(f'CS_ID: {CS_ID}')
 sys.path.append(os.path.dirname(__file__)+'/../../code/')
 # from cycler.src.rfb_battery_cycler.app.app_man import AppManNodeC
 from rfb_battery_cycler.app.app_man import AppManNodeC
+from rfb_shared_tool import SysShdNodeStatusE
 
 #######################          PROJECT IMPORTS         #######################
 
@@ -43,3 +44,6 @@ if __name__ == '__main__':
         cs_manager.run()
     except KeyboardInterrupt:
         working_flag_event.clear()
+    while cs_manager.status != SysShdNodeStatusE.STOP:
+        pass
+    log.critical('Manager stopped')

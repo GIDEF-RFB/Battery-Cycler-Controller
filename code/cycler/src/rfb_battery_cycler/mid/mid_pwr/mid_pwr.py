@@ -183,7 +183,7 @@ class MidPwrControlC: #pylint: disable= too-many-instance-attributes
         self.actual_inst.instr_id = None
         self.pwr_limits = bat_pwr_range
 
-    def process_iteration(self) -> Tuple[CyclerDataExpStatusE, int]: #pylint: disable= too-many-branches
+    def process_iteration(self) -> Tuple[CyclerDataExpStatusE, int]: #pylint: disable= too-many-branches, too-many-statements
         """Processes a single instruction .
 
         Returns:
@@ -242,6 +242,7 @@ class MidPwrControlC: #pylint: disable= too-many-instance-attributes
                                 status = CyclerDataExpStatusE.RUNNING
                             else:
                                 self.actual_inst.instr_id = None
+                                self.pwr_dev.disable()
                                 self.__last_mode = CyclerDataPwrModeE.DISABLE
                                 status = CyclerDataExpStatusE.FINISHED
                 else:
@@ -258,6 +259,7 @@ class MidPwrControlC: #pylint: disable= too-many-instance-attributes
                         status = CyclerDataExpStatusE.FINISHED
         else:
             status = CyclerDataExpStatusE.ERROR
+            self.pwr_dev.disable()
             # TODO: Add alarms callback #pylint: disable= fixme
             self.__alarm_callback(CyclerDataAlarmC(code= 0, value=0))
         return status, self.actual_inst.instr_id

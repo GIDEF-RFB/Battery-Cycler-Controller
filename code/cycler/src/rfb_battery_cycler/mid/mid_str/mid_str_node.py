@@ -11,7 +11,7 @@ from typing import List
 
 #######################       THIRD PARTY IMPORTS        #######################
 from func_timeout import func_timeout, FunctionTimedOut
-
+from sqlalchemy.exc import DatabaseError
 #######################      SYSTEM ABSTRACTION IMPORTS  #######################
 from rfb_logger_tool import sys_log_logger_get_module_logger
 log = sys_log_logger_get_module_logger(__name__)
@@ -149,6 +149,8 @@ class MidStrNodeC(SysShdNodeC): #pylint: disable= too-many-instance-attributes
         """AI is creating summary for process_iteration
         """
         try:
+            # Check if the db are connected
+            self.db_iface.check_connection()
             # Syncronising shared data
             self.sync_shd_data()
             # Receive and write alarms
@@ -162,7 +164,7 @@ class MidStrNodeC(SysShdNodeC): #pylint: disable= too-many-instance-attributes
             if self.db_iface.gen_meas.instr_id is not None and self.__actual_exp_id != -1:
                 self.db_iface.write_generic_measures(exp_id= self.__actual_exp_id)
                 ## TODO: remove commit, should work without this commit # pylint: disable=fixme
-                self.db_iface.commit_changes()
+                # self.db_iface.commit_changes()
                 self.db_iface.write_status_changes(exp_id= self.__actual_exp_id)
                 self.db_iface.write_extended_measures(exp_id= self.__actual_exp_id)
                 self.db_iface.meas_id += 1
@@ -173,11 +175,15 @@ class MidStrNodeC(SysShdNodeC): #pylint: disable= too-many-instance-attributes
                 log.debug(f"Command to apply: {command.cmd_type.name}")
                 self.__apply_command(command)
             # TIMEOUT added to detect if database connection was ended
-            func_timeout(DEFAULT_TIMEOUT_CONNECTION, self.db_iface.commit_changes)
+            # func_timeout(DEFAULT_TIMEOUT_CONNECTION, self.db_iface.commit_changes)
         except FunctionTimedOut as exc:
             log.warning(("Timeout during commit changes to local database."
                          f"Database connection will be restarted. {exc}"))
             self.status = SysShdNodeStatusE.COMM_ERROR
+            self.db_iface.reset_db_connection()
+        except DatabaseError as exc:
+            self.status = SysShdNodeStatusE.COMM_ERROR
+            log.critical(f"Database error in str node {exc}")
             self.db_iface.reset_db_connection()
         except ConnectionError as exc:
             self.status = SysShdNodeStatusE.COMM_ERROR

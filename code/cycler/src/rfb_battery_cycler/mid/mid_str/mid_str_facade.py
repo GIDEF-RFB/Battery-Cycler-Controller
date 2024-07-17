@@ -22,7 +22,7 @@ from rfb_driver_db import (DrvDbSqlEngineC, DrvDbMasterExperimentC, DrvDbBattery
         DrvDbCacheExtendedMeasureC, DrvDbCacheGenericMeasureC, DrvDbCacheStatusC, DrvDbTypeE,
         DrvDbUsedDeviceC, DrvDbCompatibleDeviceC, DrvDbDeviceTypeE, DrvDbLinkConfigurationC,
         DrvDbCacheExperimentC, DrvDbDetectedDeviceC, DrvDbUsedMeasuresC, DrvDbAvailableMeasuresC,
-        transform_experiment_db)
+        DrvDbEquipStatusE, transform_experiment_db)
 
 from rfb_cycler_datatypes.cycler_data import (CyclerDataAlarmC, CyclerDataGenMeasC,
             CyclerDataExtMeasC, CyclerDataAllStatusC, CyclerDataExpStatusE, CyclerDataProfileC,
@@ -67,6 +67,22 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
         self.status_id: int = 0
         self.alarm_id: int = 0
 
+    def check_connection(self) -> None:
+        """Check if the connection to the database is working.
+        Returns:
+            [bool]: [description]
+        """
+        self.__master_db.check_connection()
+        self.__cache_db.check_connection()
+
+    def __get_queue_exp(self):
+        with self.__master_db.session_maker() as session:
+            return session.query(DrvDbMasterExperimentC).populate_existing().\
+            filter( DrvDbMasterExperimentC.Status == DrvDbExpStatusE.QUEUED.value,
+            DrvDbMasterExperimentC.CSID == self.cs_id).order_by(
+                DrvDbMasterExperimentC.DateCreation.asc()).all()
+
+
     def get_start_queued_exp(self) -> Tuple[CyclerDataExperimentC|None, CyclerDataBatteryC|None,
                                             CyclerDataProfileC|None]:
         '''
@@ -79,13 +95,14 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
         exp = None
         battery = None
         profile = None
-        self.__master_db.session.expire_all()
-        self.__master_db.session.close()
-        self.__master_db.session.begin()
-        exp_result = self.__master_db.session.query(DrvDbMasterExperimentC).populate_existing().\
-            filter( DrvDbMasterExperimentC.Status == DrvDbExpStatusE.QUEUED.value,
-            DrvDbMasterExperimentC.CSID == self.cs_id).order_by(
-                DrvDbMasterExperimentC.DateCreation.asc()).all()
+        # self.__master_db.session.expire_all()
+        # self.__master_db.session.close()
+        # self.__master_db.session.begin()
+        # exp_result = self.__master_db.session.query(DrvDbMasterExperimentC).populate_existing().\
+        #     filter( DrvDbMasterExperimentC.Status == DrvDbExpStatusE.QUEUED.value,
+        #     DrvDbMasterExperimentC.CSID == self.cs_id).order_by(
+        #         DrvDbMasterExperimentC.DateCreation.asc()).all()
+        exp_result = self.__get_queue_exp()
         if len(exp_result) != 0:
             exp_result: DrvDbMasterExperimentC = exp_result[0]
             exp : CyclerDataExperimentC = CyclerDataExperimentC()
@@ -100,7 +117,7 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
             exp_db = DrvDbCacheExperimentC()
             transform_experiment_db(source= exp_result, target = exp_db)
             exp_db.Status = DrvDbExpStatusE.RUNNING.value
-            exp_db.DateBegin = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+            exp_db.DateBegin = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             self.__cache_db.session.add(exp_db)
             log.debug(f"Experiment fetched: {exp.__dict__}, {battery.__dict__}, {profile.__dict__}")
         else:
@@ -131,33 +148,34 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
         """
         stmt = select(DrvDbProfileC).where(DrvDbProfileC.ProfID == prof_id).\
             execution_options(populate_existing=True)
-        result = self.__master_db.session.execute(stmt).all()
-        result: DrvDbProfileC = result[0][0]
-        profile = CyclerDataProfileC(name= result.Name)
-        profile_range = CyclerDataPwrRangeC(curr_max= result.CurrMax, curr_min= result.CurrMin,
-                                         volt_max= result.VoltMax, volt_min= result.VoltMin)
-        profile.range = profile_range
-        instructions= []
-        stmt = select(DrvDbInstructionC).where(DrvDbInstructionC.ProfID == result.ProfID)
-        result = self.__master_db.session.execute(stmt).all()
-        if len(result) != 0:
-            for inst_res in result:
-                inst_res:DrvDbInstructionC = inst_res[0]
-                instruction = CyclerDataInstructionC()
-                for db_name, att_name in MAPPING_INSTR_DB.items():
-                    if att_name == 'mode':
-                        setattr(instruction, att_name,
-                                CyclerDataPwrModeE(MAPPING_INSTR_MODES[getattr(inst_res,db_name)]))
-                    elif (instruction.mode != CyclerDataPwrModeE.DISABLE and
-                          att_name == 'limit_type'):
-                        setattr(instruction, att_name,
-                            CyclerDataPwrLimitE(MAPPING_INSTR_LIMIT_MODES[getattr(inst_res,db_name)]
-                                                ))
-                    elif instruction.mode != CyclerDataPwrModeE.DISABLE and att_name == 'limit_ref':
-                        setattr(instruction, att_name, getattr(inst_res,db_name))
-                    else:
-                        setattr(instruction, att_name, getattr(inst_res,db_name))
-                instructions.append(instruction)
+        with self.__master_db.session_maker() as session:
+            result = session.execute(stmt).all()
+            result: DrvDbProfileC = result[0][0]
+            profile = CyclerDataProfileC(name= result.Name)
+            profile_range = CyclerDataPwrRangeC(curr_max= result.CurrMax, curr_min= result.CurrMin,
+                                            volt_max= result.VoltMax, volt_min= result.VoltMin)
+            profile.range = profile_range
+            instructions= []
+            stmt = select(DrvDbInstructionC).where(DrvDbInstructionC.ProfID == result.ProfID)
+            result = session.execute(stmt).all()
+            if len(result) != 0:
+                for inst_res in result:
+                    inst_res:DrvDbInstructionC = inst_res[0]
+                    instruction = CyclerDataInstructionC()
+                    for db_name, att_name in MAPPING_INSTR_DB.items():
+                        if att_name == 'mode':
+                            setattr(instruction, att_name,
+                                    CyclerDataPwrModeE(MAPPING_INSTR_MODES[getattr(inst_res,db_name)]))
+                        elif (instruction.mode != CyclerDataPwrModeE.DISABLE and
+                            att_name == 'limit_type'):
+                            setattr(instruction, att_name,
+                                CyclerDataPwrLimitE(MAPPING_INSTR_LIMIT_MODES[getattr(inst_res,db_name)]
+                                                    ))
+                        elif instruction.mode != CyclerDataPwrModeE.DISABLE and att_name == 'limit_ref':
+                            setattr(instruction, att_name, getattr(inst_res,db_name))
+                        else:
+                            setattr(instruction, att_name, getattr(inst_res,db_name))
+                    instructions.append(instruction)
         profile.instructions = instructions
         return profile
 
@@ -170,11 +188,12 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
         """
         battery = None
         stmt = select(DrvDbBatteryC).where(DrvDbBatteryC.BatID == bat_id)
-        try:
-            result = self.__master_db.session.execute(stmt).one()[0]
-        except Exception as err:
-            log.exception(err)
-            raise Exception(err) from err #pylint: disable= broad-exception-raised
+        with self.__master_db.session_maker() as session:
+            try:
+                result = session.execute(stmt).one()[0]
+            except Exception as err:
+                log.exception(err)
+                raise Exception(err) from err #pylint: disable= broad-exception-raised
         battery = CyclerDataBatteryC()
         for db_name, att_name in MAPPING_BATT_DB.items():
             setattr(battery, att_name, getattr(result,db_name))
@@ -191,83 +210,85 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
         """
         ## Get cycler station info
         stmt = select(DrvDbCyclerStationC.Deprecated).where(DrvDbCyclerStationC.CSID == self.cs_id)
-        result = self.__master_db.session.execute(stmt).one()[0]
+        with self.__master_db.session_maker() as session:
+            result = session.execute(stmt).one()[0]
         return result
 
-    def get_cycler_station_info(self) -> CyclerDataCyclerStationC|None: #pylint: disable= too-many-locals
+    def get_cycler_station_info(self) -> CyclerDataCyclerStationC|None: #pylint: disable= too-many-locals, too-many-branches, too-many-statements
         """Returns the name and name of the cycle station for the experiment .
         Returns:
             [CyclerDataCyclerStationC]: [description]
         """
         ## Get cycler station info
         stmt = select(DrvDbCyclerStationC).where(DrvDbCyclerStationC.CSID == self.cs_id)
-        result = self.__master_db.session.execute(stmt).one()[0]
-        cycler_station = CyclerDataCyclerStationC()
-        for key,value in MAPPING_CS_DB.items():
-            setattr(cycler_station, value, getattr(result,key))
-        ## Get devices used in the cycler station
-        stmt = select(DrvDbUsedDeviceC).where(DrvDbUsedDeviceC.CSID == self.cs_id)
-        result = self.__master_db.session.execute(stmt).all()
-        log.debug(result)
-        devices= []
-        for res_dev in result:
-            res_dev: DrvDbUsedDeviceC = res_dev[0]
-            log.debug(f"Device found, {res_dev.__dict__}")
-            stmt = select(DrvDbDetectedDeviceC, DrvDbCompatibleDeviceC).join(DrvDbCompatibleDeviceC,
-                DrvDbDetectedDeviceC.CompDevID == DrvDbCompatibleDeviceC.CompDevID).where(
-                    DrvDbDetectedDeviceC.DevID == res_dev.DevID)
-            result = self.__master_db.session.execute(stmt).one()
-            detected_dev_res = result[0]
-            comp_dev_res = result[1]
-            device = CyclerDataDeviceC(mapping_names={})
-            for db_name, att_name in MAPPING_DEV_DB.items():
-                if att_name == "device_type":
-                    setattr(device, att_name, CyclerDataDeviceTypeE(getattr(comp_dev_res,db_name)))
-                    device.check_power_device()
-                    log.critical(device.device_type)
-                elif att_name == "iface_name":
-                    if comp_dev_res.DeviceType is DrvDbDeviceTypeE.SOURCE.value:
-                        setattr(device, att_name,
-                                "/dev/wattrex/source/"+getattr(detected_dev_res,db_name))
-                    elif comp_dev_res.DeviceType is DrvDbDeviceTypeE.LOAD.value:
-                        setattr(device, att_name,
-                                "/dev/wattrex/loads/"+getattr(detected_dev_res,db_name))
-                    elif comp_dev_res.DeviceType is DrvDbDeviceTypeE.BISOURCE.value:
-                        setattr(device, att_name,
-                                "/dev/wattrex/bisource/"+getattr(detected_dev_res,db_name))
-                    elif comp_dev_res.DeviceType is DrvDbDeviceTypeE.FLOW.value:
-                        setattr(device, att_name,
-                                "/dev/wattrex/flow/"+getattr(detected_dev_res,db_name))
-                    elif comp_dev_res.DeviceType is DrvDbDeviceTypeE.BK.value:
-                        setattr(device, att_name,
-                                "/dev/wattrex/bk/"+getattr(detected_dev_res,db_name))
-                elif db_name in detected_dev_res.__dict__:
-                    setattr(device, att_name, getattr(detected_dev_res,db_name))
-                else:
-                    setattr(device, att_name, getattr(comp_dev_res,db_name))
-            stmt = select(DrvDbUsedMeasuresC).where(DrvDbUsedMeasuresC.DevID == res_dev.DevID).\
-                where(DrvDbUsedMeasuresC.CSID == self.cs_id)
-            ext_meas_res = self.__master_db.session.execute(stmt).all()
-            for ext_meas in ext_meas_res:
-                ext_meas: DrvDbUsedMeasuresC = ext_meas[0]
-                stmt = select(DrvDbAvailableMeasuresC).where(
-                    DrvDbAvailableMeasuresC.MeasType == ext_meas.MeasType and
-                    DrvDbAvailableMeasuresC.CompDevID == comp_dev_res.CompDevID)
-                available_meas = self.__master_db.session.execute(stmt).one()
-                available_meas: DrvDbAvailableMeasuresC = available_meas[0]
-                device.mapping_names[available_meas.MeasName] = int(ext_meas.UsedMeasID)
-            if comp_dev_res.DeviceType is not DrvDbDeviceTypeE.EPC.value:
-                ## Get link configuration if needed
-                stmt = select(DrvDbLinkConfigurationC).where(
-                    DrvDbLinkConfigurationC.CompDevID == detected_dev_res.CompDevID)
-                result = self.__master_db.session.execute(stmt).all()
-                if len(result) != 0:
-                    link_conf = {}
-                    for res in result:
-                        res: DrvDbLinkConfigurationC = res[0]
-                        link_conf[res.Property.lower()] = str(res.Value)
-                    device.link_conf = CyclerDataLinkConfC(**link_conf)
-            devices.append(device)
+        with self.__master_db.session_maker() as session:
+            result = session.execute(stmt).one()[0]
+            cycler_station = CyclerDataCyclerStationC()
+            for key,value in MAPPING_CS_DB.items():
+                setattr(cycler_station, value, getattr(result,key))
+            ## Get devices used in the cycler station
+            stmt = select(DrvDbUsedDeviceC).where(DrvDbUsedDeviceC.CSID == self.cs_id)
+            result = session.execute(stmt).all()
+            log.debug(result)
+            devices= []
+            for res_dev in result:
+                res_dev: DrvDbUsedDeviceC = res_dev[0]
+                log.debug(f"Device found, {res_dev.__dict__}")
+                stmt = select(DrvDbDetectedDeviceC, DrvDbCompatibleDeviceC).join(DrvDbCompatibleDeviceC,
+                    DrvDbDetectedDeviceC.CompDevID == DrvDbCompatibleDeviceC.CompDevID).where(
+                        DrvDbDetectedDeviceC.DevID == res_dev.DevID)
+                result = session.execute(stmt).one()
+                detected_dev_res = result[0]
+                comp_dev_res = result[1]
+                device = CyclerDataDeviceC(mapping_names={})
+                for db_name, att_name in MAPPING_DEV_DB.items():
+                    if att_name == "device_type":
+                        setattr(device, att_name, CyclerDataDeviceTypeE(getattr(comp_dev_res,db_name)))
+                        device.check_power_device()
+                        log.info(device.device_type)
+                    elif att_name == "iface_name":
+                        if comp_dev_res.DeviceType is DrvDbDeviceTypeE.SOURCE.value:
+                            setattr(device, att_name,
+                                    "/dev/wattrex/source/"+getattr(detected_dev_res,db_name))
+                        elif comp_dev_res.DeviceType is DrvDbDeviceTypeE.LOAD.value:
+                            setattr(device, att_name,
+                                    "/dev/wattrex/loads/"+getattr(detected_dev_res,db_name))
+                        elif comp_dev_res.DeviceType is DrvDbDeviceTypeE.BISOURCE.value:
+                            setattr(device, att_name,
+                                    "/dev/wattrex/bisource/"+getattr(detected_dev_res,db_name))
+                        elif comp_dev_res.DeviceType is DrvDbDeviceTypeE.FLOW.value:
+                            setattr(device, att_name,
+                                    "/dev/wattrex/flow/"+getattr(detected_dev_res,db_name))
+                        elif comp_dev_res.DeviceType is DrvDbDeviceTypeE.BK.value:
+                            setattr(device, att_name,
+                                    "/dev/wattrex/bk/"+getattr(detected_dev_res,db_name))
+                    elif db_name in detected_dev_res.__dict__:
+                        setattr(device, att_name, getattr(detected_dev_res,db_name))
+                    else:
+                        setattr(device, att_name, getattr(comp_dev_res,db_name))
+                stmt = select(DrvDbUsedMeasuresC).where(DrvDbUsedMeasuresC.DevID == res_dev.DevID).\
+                    where(DrvDbUsedMeasuresC.CSID == self.cs_id)
+                ext_meas_res = session.execute(stmt).all()
+                for ext_meas in ext_meas_res:
+                    ext_meas: DrvDbUsedMeasuresC = ext_meas[0]
+                    stmt = select(DrvDbAvailableMeasuresC).where(
+                        DrvDbAvailableMeasuresC.MeasType == ext_meas.MeasType and
+                        DrvDbAvailableMeasuresC.CompDevID == comp_dev_res.CompDevID)
+                    available_meas = session.execute(stmt).one()
+                    available_meas: DrvDbAvailableMeasuresC = available_meas[0]
+                    device.mapping_names[available_meas.MeasName] = int(ext_meas.UsedMeasID)
+                if comp_dev_res.DeviceType is not DrvDbDeviceTypeE.EPC.value:
+                    ## Get link configuration if needed
+                    stmt = select(DrvDbLinkConfigurationC).where(
+                        DrvDbLinkConfigurationC.CompDevID == detected_dev_res.CompDevID)
+                    result = session.execute(stmt).all()
+                    if len(result) != 0:
+                        link_conf = {}
+                        for res in result:
+                            res: DrvDbLinkConfigurationC = res[0]
+                            link_conf[res.Property.lower()] = str(res.Value)
+                        device.link_conf = CyclerDataLinkConfC(**link_conf)
+                devices.append(device)
         cycler_station.devices= devices
         log.debug(f"Cycler station object, {cycler_station.__dict__}")
         return cycler_station
@@ -295,10 +316,14 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
         status.StatusID = self.status_id
         status.Timestamp = datetime.now()
         status.ExpID = exp_id
+
         for db_name, att_name in MAPPING_STATUS.items():
             setattr(status, db_name, getattr(self.all_status.pwr_dev, att_name))
-        self.__cache_db.session.add(status)
-        self.status_id += 1
+        if status.ErrorCode != DrvDbEquipStatusE.OK:
+            with self.__cache_db.session_maker() as session:
+                session.add(status)
+            # self.__cache_db.session.add(status)
+            self.status_id += 1
 
     def write_new_alarm(self, alarms: List[CyclerDataAlarmC], exp_id: int) -> None:
         """Write an alarm into the cache db .
@@ -327,7 +352,9 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
         gen_meas.PowerMode = self.all_status.pwr_mode.name
         for db_name, att_name in MAPPING_GEN_MEAS.items():
             setattr(gen_meas, db_name, getattr(self.gen_meas, att_name))
-        self.__cache_db.session.add(gen_meas)
+        # self.__cache_db.session.add(gen_meas)
+        with self.__cache_db.session_maker() as session:
+            session.add(gen_meas)
 
     def write_extended_measures(self, exp_id: int) -> None:
         """Write the extended measures into the cache db .
@@ -341,7 +368,9 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
             ext_meas.MeasID = self.meas_id
             ext_meas.Value = getattr(self.ext_meas,key)
             if ext_meas.Value is not None:
-                self.__cache_db.session.add(ext_meas)
+                # self.__cache_db.session.add(ext_meas)
+                with self.__cache_db.session_maker() as session:
+                    session.add(ext_meas)
 
     def turn_cycler_station_deprecated(self, exp_id: int|None) -> None:
         """Method to turn a cycler station to deprecated.
@@ -364,8 +393,8 @@ class MidStrFacadeC: #pylint: disable= too-many-instance-attributes
             exp_db = DrvDbCacheExperimentC()
             transform_experiment_db(source= exp_result, target = exp_db)
             exp_db.Status = DrvDbExpStatusE.ERROR.value
-            exp_db.DateBegin = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
-            exp_db.DateFinish = datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+            exp_db.DateBegin = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            exp_db.DateFinish = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             self.__cache_db.session.add(exp_db)
 
     def commit_changes(self):

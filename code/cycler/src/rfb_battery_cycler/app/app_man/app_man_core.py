@@ -52,6 +52,7 @@ class AppManCoreC: #pylint: disable=too-many-instance-attributes
                 str_data: SysShdChanC, str_alarms: SysShdChanC) -> None:
         ##
         self.state: AppManCoreStatusE = AppManCoreStatusE.GET_EXP
+        self.__last_state: AppManCoreStatusE = AppManCoreStatusE.ERROR
 
         ## Attributes related with experiment
         self.profile: CyclerDataProfileC|None = None
@@ -235,7 +236,10 @@ class AppManCoreC: #pylint: disable=too-many-instance-attributes
         """Execute the experiment
         """
         # First step is to update the local data in power
+        exp_status = self.exp_status
         self.exp_status, self.__local_gen_meas.instr_id = self.pwr_control.process_iteration()
+        if exp_status != self.exp_status:
+            log.info(f"Experiment status changed to {self.exp_status}")
         self.__update_exp_status(self.exp_status)
 
     def execute_machine_status(self) -> None: #pylint: disable=too-many-branches, too-many-statements
@@ -246,7 +250,9 @@ class AppManCoreC: #pylint: disable=too-many-instance-attributes
             if self.state == AppManCoreStatusE.GET_EXP:
                 ## Wait for cs status to continue
                 if self.__get_exp_status is _AppManCoreGetExpStatusE.GET_EXP:
-                    log.info("Searching for new experiment")
+                    if self.__last_state != self.state:
+                        self.__last_state = self.state
+                        log.info("Searching for new experiment")
                     self.__fetch_new_exp()
                     self.__request_cs_status()
                     self.__get_exp_status = _AppManCoreGetExpStatusE.WAIT_CS
@@ -273,7 +279,9 @@ class AppManCoreC: #pylint: disable=too-many-instance-attributes
             elif self.state == AppManCoreStatusE.PREPARE_EXP:
                 ## Set experiment to pwr control
                 ## TODO: FUNCTION FOR ALARMS CALLBACK
-                log.debug("Experiment received, validating")
+                if self.__last_state != self.state:
+                    self.__last_state = self.state
+                    log.debug("Experiment received, validating")
                 if not self.__validate_exp_ranges(self.battery, self.profile):
                     self.exp_status = CyclerDataExpStatusE.ERROR
                     self.__update_exp_status(self.exp_status)
@@ -286,10 +294,12 @@ class AppManCoreC: #pylint: disable=too-many-instance-attributes
                     if self.pwr_control.all_instructions == self.profile.instructions:
                         self.state = AppManCoreStatusE.EXECUTE_EXP
             elif self.state == AppManCoreStatusE.EXECUTE_EXP:
-                log.debug("Executing experiment")
+                if self.__last_state != self.state:
+                    self.__last_state = self.state
+                    log.debug("Executing experiment")
                 self.__execute_experiment()
                 ## Check if the experiment has finish and try to get the next one
-                log.info(f"Experiment status: {self.exp_status}")
+                # log.info(f"Experiment status: {self.exp_status}")
                 if self.exp_status in (CyclerDataExpStatusE.FINISHED,
                                         CyclerDataExpStatusE.ERROR):
                     self.experiment = None
@@ -308,3 +318,4 @@ class AppManCoreC: #pylint: disable=too-many-instance-attributes
         """
         log.error("This is a test for alarm callback")
         log.error(f"Received {alarm.__dict__}")
+        self.__chan_str_alarms.send_data(alarm)

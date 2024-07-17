@@ -17,7 +17,7 @@ from typing import List
 from rfb_logger_tool import sys_log_logger_get_module_logger, Logger
 log: Logger = sys_log_logger_get_module_logger(__name__)
 from rfb_shared_tool import (SysShdChanC, SysShdSharedObjC, SysShdNodeC,
-                                SysShdNodeStatusE)
+                                SysShdNodeStatusE, SysShdIpcChanC)
 
 #######################          PROJECT IMPORTS         #######################
 from rfb_cycler_datatypes.cycler_data import (CyclerDataAllStatusC, CyclerDataGenMeasC,
@@ -79,11 +79,10 @@ class AppManNodeC(SysShdNodeC): # pylint: disable=too-many-instance-attributes
         self.__shd_gen_meas = SysShdSharedObjC(CyclerDataGenMeasC())
         self.__shd_ext_meas = SysShdSharedObjC(CyclerDataExtMeasC())
         self.__shd_all_status  = SysShdSharedObjC(CyclerDataAllStatusC())
-        __chan_alarms = SysShdChanC()
+        self.__chan_alarms = SysShdChanC()
         __chan_str_reqs = SysShdChanC()
         __chan_str_data = SysShdChanC()
-        ## TODO: add heartbeat channel
-        # self.hb_chan: SysShdIpcChanC
+        self.hb_chan: SysShdIpcChanC = SysShdIpcChanC(name='heartbeat_queue')
         self.__shared_tags: CyclerDataMergeTagsC = CyclerDataMergeTagsC(status_attrs= [],
                                                                  gen_meas_attrs= ['instr_id'],
                                                                  ext_meas_attrs= [])
@@ -92,12 +91,12 @@ class AppManNodeC(SysShdNodeC): # pylint: disable=too-many-instance-attributes
         self._th_str = MidStrNodeC(working_flag= self.working_str,
                 shared_gen_meas= self.__shd_gen_meas, shared_ext_meas= self.__shd_ext_meas,
                 shared_status= self.__shd_all_status, str_reqs= __chan_str_reqs,
-                str_data= __chan_str_data, str_alarms= __chan_alarms, cycler_station= self.cs_id)
+                str_data= __chan_str_data, str_alarms= self.__chan_alarms, cycler_station= self.cs_id)
         self._th_str.start()
 
         # Get info from the cycler station to know which devices are compatible
         self.configure_cs(reqs_chan= __chan_str_reqs, data_chan= __chan_str_data,
-                          alarms_chan= __chan_alarms)
+                          alarms_chan= self.__chan_alarms)
         if self.status is not SysShdNodeStatusE.OK:
             self.working_str.clear()
             self._th_str.join()
@@ -136,6 +135,7 @@ class AppManNodeC(SysShdNodeC): # pylint: disable=too-many-instance-attributes
                 self.sync_shd_data(raised_alarms= [])
                 while self._th_meas.status != SysShdNodeStatusE.OK:
                     sleep(1)
+                    self.heartbeat()
                 self.status = SysShdNodeStatusE.OK
             else:
                 log.critical(("Cycler station is deprecated. Meas node will not be launched, "
@@ -160,21 +160,13 @@ class AppManNodeC(SysShdNodeC): # pylint: disable=too-many-instance-attributes
             # stop = True
 
 
-        # if not self._th_str.is_alive():
-        #     log.critical("Thread MID_STR has died.")
-        #     al = APP_DIAG_Alarm_c(code=APP_DIAG_Alarm_Type_e.INTERNAL_PLC_ERR.value, status=2)
+        if not self._th_str.is_alive():
+            log.critical("Thread MID_STR has died.")
+            # al = APP_DIAG_Alarm_c(code=APP_DIAG_Alarm_Type_e.INTERNAL_PLC_ERR.value, status=2)
         #     alarms.append(al)
         #     self._th_str.stop()
         #     self._th_str.join()
         #     stop = True
-
-        # if hasattr(self._th_dabs, "can_drv_node"):
-        #     if not self._th_dabs.can_drv_node.is_alive():
-        #         log.critical("Thread CAN_DRV, used on MID_DABS, has died.")
-        #         al = APP_DIAG_Alarm_c(code=APP_DIAG_Alarm_Type_e.INTERNAL_PLC_ERR.value, status=3)
-        #         alarms.append(al)
-        #         self.__stopDABS_CAN()
-        #         stop = True
 
         ## TODO: improve shutdown
         return alarms
@@ -182,20 +174,26 @@ class AppManNodeC(SysShdNodeC): # pylint: disable=too-many-instance-attributes
     def heartbeat(self) -> None:
         """Perform a heartbeat .
         """
-        ## TODO: add heartbeat
+        self.hb_chan.send_data(data= self.cs_id)
 
     def stop(self, timeout=1.0):
         """ Stop the thread. """
-        self.status = SysShdNodeStatusE.STOP
         log.critical("Stopping Cycler manager node")
+        if not self.__chan_alarms.is_empty():
+            self.hb_chan.send_data(data= f"ERROR {self.cs_id}")
+        else:
+            self.hb_chan.send_data(data= f"STOP {self.cs_id}")
         self.working_flag.clear()
         self.working_meas.clear()
         ## If the manager is stoping, first turn all experiments queued or running to error
         self.man_core.turn_deprecated()
-        sleep(2)
+        sleep(3)
+        self.hb_chan.close()
         self.working_str.clear()
+        sleep(3)
         self._th_str.join(timeout=timeout)
         self._th_meas.join(timeout=timeout)
+        self.status = SysShdNodeStatusE.STOP
 
     def sync_shd_data(self, raised_alarms: List[CyclerDataAlarmC]) -> None: #pylint: disable= arguments-differ
         self.man_core.update_local_data(new_gen_meas=  self.__shd_gen_meas.\
