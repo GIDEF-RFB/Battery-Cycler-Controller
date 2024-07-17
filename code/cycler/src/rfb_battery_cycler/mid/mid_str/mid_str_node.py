@@ -164,7 +164,7 @@ class MidStrNodeC(SysShdNodeC): #pylint: disable= too-many-instance-attributes
             if self.db_iface.gen_meas.instr_id is not None and self.__actual_exp_id != -1:
                 self.db_iface.write_generic_measures(exp_id= self.__actual_exp_id)
                 ## TODO: remove commit, should work without this commit # pylint: disable=fixme
-                self.db_iface.commit_changes()
+                # self.db_iface.commit_changes()
                 self.db_iface.write_status_changes(exp_id= self.__actual_exp_id)
                 self.db_iface.write_extended_measures(exp_id= self.__actual_exp_id)
                 self.db_iface.meas_id += 1
@@ -175,7 +175,7 @@ class MidStrNodeC(SysShdNodeC): #pylint: disable= too-many-instance-attributes
                 log.debug(f"Command to apply: {command.cmd_type.name}")
                 self.__apply_command(command)
             # TIMEOUT added to detect if database connection was ended
-            func_timeout(DEFAULT_TIMEOUT_CONNECTION, self.db_iface.commit_changes)
+            # func_timeout(DEFAULT_TIMEOUT_CONNECTION, self.db_iface.commit_changes)
         except FunctionTimedOut as exc:
             log.warning(("Timeout during commit changes to local database."
                          f"Database connection will be restarted. {exc}"))
